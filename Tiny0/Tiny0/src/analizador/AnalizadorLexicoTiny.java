@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.Reader;
 import java.io.InputStreamReader;
-import java.io.IOException;
 
 public class AnalizadorLexicoTiny {
 
