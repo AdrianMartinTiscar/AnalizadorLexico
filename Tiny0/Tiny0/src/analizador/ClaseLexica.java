@@ -1,0 +1,9 @@
+package analizador;
+
+public enum ClaseLexica {
+	INT, REAL, BOOL, TRUE, FALSE, ID, ASIG,
+	NENTERO, EXPON, DEC, NREAL, EXPRES, SEPAR,
+	SUMA, RESTA, DIV, AND, OR, NOT, MEN, MAY, 
+	MENEQ, MAYEQ, EQUIV, DIST, PAP, PCIE, PTOCOMA, IGUAL,
+	IGN, EOF
+}
