@@ -150,7 +150,7 @@ public class AnalizadorLexicoTiny {
 					return unidadResta();
 				break;
 			case RETZERO:
-				return unidadCero();
+				return unidadEntera();
 			case RETSUM:
 				if (hayDigitoPos())
 					transita(Estado.RETENT);
@@ -315,13 +315,11 @@ public class AnalizadorLexicoTiny {
 
 
 	private boolean hayIgnorable() {
-		return sigCar == ' ' || sigCar == '\n'|| sigCar == '\b' || sigCar == '\r';
+		return sigCar == ' ' || sigCar == '\n'|| sigCar == '\b' || sigCar == '\r' || sigCar == '\t';
 	}
-	
-	//Posible necesidad de añadir separadores al leer algo????????? son los ignorables????
-	
-	
-	private boolean hayEOF() {//NECESARIO??????????
+
+		
+	private boolean hayEOF() {
 		return sigCar == -1;
 	}
 
@@ -348,10 +346,6 @@ public class AnalizadorLexicoTiny {
 		}
 	}
 
-	private UnidadLexica unidadAsigna() {
-		return new UnidadLexicaMultivaluada(filaInicio, columnaInicio, ClaseLexica.ASIG, lex.toString());
-	}
-
 	private UnidadLexica unidadEntera() {
 		return new UnidadLexicaMultivaluada(filaInicio, columnaInicio, ClaseLexica.NENTERO, lex.toString());
 	}
@@ -364,11 +358,7 @@ public class AnalizadorLexicoTiny {
 	private UnidadLexica unidadDecimal() {
 		return new UnidadLexicaMultivaluada(filaInicio, columnaInicio, ClaseLexica.DEC, lex.toString());
 	}
-	
-	private UnidadLexica unidadExpresion() {
-		return new UnidadLexicaMultivaluada(filaInicio, columnaInicio, ClaseLexica.EXPRES, lex.toString());
-	}
-	
+
 	private UnidadLexica unidadSeparacion() {
 		return new UnidadLexicaMultivaluada(filaInicio, columnaInicio, ClaseLexica.SEPAR, lex.toString());
 	}
@@ -420,18 +410,11 @@ public class AnalizadorLexicoTiny {
 	private UnidadLexica unidadPuntoyComa() {
 		return new UnidadLexicaUnivaluada(filaInicio, columnaInicio, ClaseLexica.PTOCOMA);
 	}
+	
 	private UnidadLexica unidadEquivalente() {
 		return new UnidadLexicaUnivaluada(filaInicio, columnaInicio, ClaseLexica.EQUIV);
 	}
 	
-	private UnidadLexica unidadCero() {
-		return new UnidadLexicaUnivaluada(filaInicio, columnaInicio, ClaseLexica.CERO);
-	}
-	
-	private UnidadLexica unidadEquivalencia() {
-		return new UnidadLexicaUnivaluada(filaInicio, columnaInicio, ClaseLexica.EQUIV);
-	}
-
 	private UnidadLexica unidadDistinto() {
 		return new UnidadLexicaUnivaluada(filaInicio, columnaInicio, ClaseLexica.DIST);
 	}
