@@ -26,7 +26,7 @@ letra  = ([A-Z]|[a-z])
 digitoPositivo = [1-9]
 digito = ({digitoPositivo}|0)
 parteEntera = {digitoPositivo}{digito}*
-parteDecimal = \.{digito}* {digitoPositivo}
+parteDecimal = \.{digito}*{digitoPositivo}
 parteExponencial = (E|e)[\+,\-]?{parteEntera}
 ignorada = [ \t\r\b\n]
 comentario = #[^\n]*
@@ -63,7 +63,7 @@ type = type
 identificador = {letra}({letra}|{digito}|\_)*
 numeroEntero = [\+,\-]?{parteEntera}
 numeroReal = [\+,\-]?{parteEntera}{parteDecimal}{parteExponencial}
-literalCad = \”[^\b\n\r\“]*\”
+literalCad = \"[^\b\n\r\"]*\"
 Separacion= &&
 Amp = &
 suma = \+
@@ -74,9 +74,8 @@ men = <
 may= >
 MenEq= <=
 MayEq= >=
-Equiv= ==
-Dist = \!=
-Dist = \!=
+Equiv= \=\=
+Dist = \!\=
 PAp= \(
 PCie= \)
 PtoComa = \;
@@ -88,7 +87,7 @@ CorCie= \]
 LlAp= \{
 LlCie= \}
 Pnto = \.
-Flecha= ->
+Flecha= \->
 %%
 {ignorada}                {}
 {comentario}              {}

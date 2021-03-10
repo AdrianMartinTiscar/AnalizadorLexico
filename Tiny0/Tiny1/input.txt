@@ -1,1 +1,10 @@
 a = 5
+a->hola
+341.574e-56
+proc suma(){
+	b = 4/1*6 - 9;
+	bool t = a != b;
+}#esto es un procedimiento
+
+string pal = "fsdfsdgsdfs";
+123 <= [43]
