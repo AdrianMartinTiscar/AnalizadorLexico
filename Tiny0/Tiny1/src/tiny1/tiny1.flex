@@ -75,7 +75,8 @@ may= >
 MenEq= <=
 MayEq= >=
 Equiv= ==
-Dist = !=
+Dist = \!=
+Dist = \!=
 PAp= \(
 PCie= \)
 PtoComa = \;
