@@ -1,10 +1,21 @@
+-5
++5
 a = 5
 a->hola
 341.574e-56
+32e56
+5.45
 proc suma(){
 	b = 4/1*6 - 9;
 	bool t = a != b;
-}#esto es un procedimiento
+}#5.5 es un procedimiento
 
 string pal = "fsdfsdgsdfs";
 123 <= [43]
+
+&&
++ - * / % < > <= >= == != ) ( ; = { } . -> , &
+int real bool string and or not null true false
+proc if then else endif while do endwhile call record array of pointer new delete read write nl var type
+"hash""
+""
