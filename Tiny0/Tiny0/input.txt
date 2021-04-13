@@ -1,0 +1,3 @@
+int real bool true false and or not palabra 23 13.12 24e-34 36.34E53 
+&&
++ - * / < > >= <= == != ( ); =
