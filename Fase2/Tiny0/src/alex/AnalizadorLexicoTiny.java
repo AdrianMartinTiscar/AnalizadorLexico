@@ -106,7 +106,13 @@ public class AnalizadorLexicoTiny {
 					return unidadEntera();
 				break;
 			case RETIDEC:
-				if(hayCero())
+				if(hayCero())//x.0? idea: hacer un estado extra que venga de
+					//RetEnt y RetZero y si encuentra un 0 lo mandamos
+					//a otro estado (con otro digito diferente lo
+					//mandamos aqui, y si no encuentra nada error) 
+					//en el que si no encuentra nada más
+					//devolvemos un real, y si encuentra algo distinto lo 
+					//mandamos aqui
 					transita(Estado.RETIDEC);
 				else if(hayDigitoPos())
 					transita(Estado.RETDEC);
@@ -121,7 +127,8 @@ public class AnalizadorLexicoTiny {
 				else if(hayExpo())
 					transita(Estado.RETIEXP);
 				else
-					return unidadDecimal();
+					//return unidadDecimal();
+					return unidadReal();
 				break;
 			case RETIEXP:
 				
@@ -136,7 +143,8 @@ public class AnalizadorLexicoTiny {
 				if(hayDigito())
 					transita(Estado.RETEXP);
 				else
-					return unidadExpo();
+					//return unidadExpo();
+					return unidadReal();
 				break;
 
 			case RETISIGN:
@@ -154,7 +162,12 @@ public class AnalizadorLexicoTiny {
 					return unidadResta();
 				break;
 			case RETZERO:
-				return unidadEntera();
+				if (hayPunto()) {//Añadido por si 0.loquesea
+					transita(Estado.RETIDEC);
+				}
+				else {
+					return unidadEntera();
+				}
 			case RETSUM:
 				if (hayDigitoPos())
 					transita(Estado.RETENT);
@@ -353,7 +366,10 @@ public class AnalizadorLexicoTiny {
 	private UnidadLexica unidadEntera() {
 		return new UnidadLexicaMultivaluada(filaInicio, columnaInicio, ClaseLexica.NENTERO, lex.toString());
 	}
-
+	
+	private UnidadLexica unidadReal() {//Añadido
+		return new UnidadLexicaMultivaluada(filaInicio, columnaInicio, ClaseLexica.NREAL, lex.toString());
+	}
 	
 	private UnidadLexica unidadExpo() {
 		return new UnidadLexicaMultivaluada(filaInicio, columnaInicio, ClaseLexica.EXPON, lex.toString());
@@ -438,7 +454,7 @@ public class AnalizadorLexicoTiny {
 	
 	public static void main(String arg[]) throws IOException {
 
-		Reader input = new InputStreamReader(new FileInputStream("input.txt"));
+		Reader input = new InputStreamReader(new FileInputStream(arg[0]));
 		AnalizadorLexicoTiny al = new AnalizadorLexicoTiny(input);
 		UnidadLexica unidad;
 		do {
