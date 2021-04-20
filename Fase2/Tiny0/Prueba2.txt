@@ -1,0 +1,10 @@
+real peso;
+bool pesado;
+int alto
+&&
+nueva = (2==2) != 4;
+nueva2 = (5<6)> 8;
+nueva_3 = 5 <= 5 >= 5;
+peso = ((7 * 6) + 8) / 5 - 2;
+pesado = (2 or 3) and 4
+

@@ -1,0 +1,16 @@
+peso = -5;
+peso = 5;
+peso = +5;
+peso = 5.75;
+peso = -5.75;
+peso = +5.75;
+peso = 5.75e1;
+peso = 5.75e-1;
+peso = 5.75e+1;
+peso = +5.75e1;
+peso = +5.75e-1;
+peso = +5.75e+1;
+peso = -5.75e1;
+peso = -5.75e-1;
+peso = -5.75e+1;
+010.02e-05

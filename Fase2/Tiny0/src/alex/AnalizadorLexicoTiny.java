@@ -54,7 +54,7 @@ public class AnalizadorLexicoTiny {
 				else if (haySuma())
 					transita(Estado.RETSUM);
 				else if (hayResta())
-					transita(Estado.RETMEN);
+					transita(Estado.RETRES);
 				else if (hayMul())
 					transita(Estado.RETMUL);
 				else if (hayDiv())
@@ -72,7 +72,7 @@ public class AnalizadorLexicoTiny {
 				else if (hayDigito())
 					transita(Estado.RETENT);
 				else if (hayExclamacion())
-					transita(Estado.RETDIS);
+					transita(Estado.RETIDIS);
 				else if (hayIgual())
 					transita(Estado.RETIG);
 				else if (hayPuntoyComa())

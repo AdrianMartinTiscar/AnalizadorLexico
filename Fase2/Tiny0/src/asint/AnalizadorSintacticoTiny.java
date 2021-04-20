@@ -100,8 +100,7 @@ public class AnalizadorSintacticoTiny {
 			Instr();
 			restoIns();
 			break;
-		case EOF: break;
-		default: errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.EOF,
+		default: errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(),
 				ClaseLexica.ASIG);
 			
 		}
@@ -111,7 +110,9 @@ public class AnalizadorSintacticoTiny {
 		switch (anticipo.clase()) {
 		case ID:
 			empareja(ClaseLexica.ID);
-			igual();
+//			igual();
+			empareja(ClaseLexica.IGUAL);
+			E0();
 			break;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.ID);
@@ -131,19 +132,19 @@ public class AnalizadorSintacticoTiny {
 					ClaseLexica.EOF);
 		}
 	}
-
-	private void igual() {
-		switch (anticipo.clase()) {
-		case IGUAL:
-			empareja(ClaseLexica.IGUAL);
-			// expr();
-			E0();
-			break;
-		default:
-			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.IGUAL);
-		}
-
-	}
+//
+//	private void igual() {
+//		switch (anticipo.clase()) {
+//		case IGUAL:
+//			empareja(ClaseLexica.IGUAL);
+//			// expr();
+////			E0();
+//			break;
+//		default:
+//			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.IGUAL);
+//		}
+//
+//	}
 
 	/*
 	 * private void expr() { switch (anticipo.clase()) { case NENTERO:
@@ -181,7 +182,10 @@ public class AnalizadorSintacticoTiny {
 			empareja(ClaseLexica.SUMA);
 			E0();
 			break;
-		case EOF: break;
+		case EOF:
+		case PTOCOMA:
+		case PCIE:
+			break;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.RESTA,
 					ClaseLexica.SUMA);
@@ -195,6 +199,8 @@ public class AnalizadorSintacticoTiny {
 		case NENTERO:
 		case NREAL:
 		case ID:
+		case SUMA:
+		case RESTA:
 			E1();
 			RestoE0();
 			break;
@@ -207,14 +213,19 @@ public class AnalizadorSintacticoTiny {
 		switch (anticipo.clase()) {
 		case AND:
 		case OR:
-			E3();
-			Rest2E2();
+			op1AI();
+			E2();
+			Rest2E1();
 			break;
 		case EXPRES:
 		case NENTERO:
 		case NREAL:
 		case ID:
 		case EOF:
+		case PTOCOMA:
+		case PCIE:
+		case SUMA:
+		case RESTA:
 			break;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.AND,
@@ -229,6 +240,8 @@ public class AnalizadorSintacticoTiny {
 		case NENTERO:
 		case NREAL:
 		case ID:
+		case SUMA:
+		case RESTA:
 			E2();
 			Rest2E1();
 			break;
@@ -254,6 +267,12 @@ public class AnalizadorSintacticoTiny {
 		case NREAL:
 		case ID:
 		case EOF:
+		case PTOCOMA:
+		case PCIE:
+		case SUMA:
+		case RESTA:
+		case AND:
+		case OR:
 			break;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.MAY,
@@ -268,6 +287,8 @@ public class AnalizadorSintacticoTiny {
 		case NENTERO:
 		case NREAL:
 		case ID:
+		case SUMA:
+		case RESTA:
 			E3();
 			Rest2E2();
 			break;
@@ -289,6 +310,18 @@ public class AnalizadorSintacticoTiny {
 		case NREAL:
 		case ID:
 		case EOF:
+		case PCIE:
+		case SUMA:
+		case RESTA:
+		case PTOCOMA:
+		case AND:
+		case OR:
+		case MAY:
+		case MEN:
+		case EQUIV:
+		case DIST:
+		case MENEQ:
+		case MAYEQ:
 			break;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.MUL,
@@ -304,6 +337,8 @@ public class AnalizadorSintacticoTiny {
 		case NENTERO:
 		case NREAL:
 		case ID:
+		case SUMA:
+		case RESTA:
 			E4();
 			RestE3();
 			break;
@@ -319,9 +354,6 @@ public class AnalizadorSintacticoTiny {
 		case NOT:
 			E4();
 			break;
-		case RESTA:
-			E5();
-			break;
 		case EXPRES:
 		case PAP:
 		case NENTERO:
@@ -329,6 +361,12 @@ public class AnalizadorSintacticoTiny {
 		case ID:
 			E5();
 			break;
+		case SUMA:
+			empareja(ClaseLexica.SUMA);
+			E5();
+		case RESTA:
+			empareja(ClaseLexica.RESTA);
+			E5();
 		case EOF: break;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PAP,
@@ -403,6 +441,12 @@ public class AnalizadorSintacticoTiny {
 			break;
 		case DIST:
 			empareja(ClaseLexica.DIST);
+			break;
+		case MENEQ:
+			empareja(ClaseLexica.MENEQ);
+			break;
+		case MAYEQ:
+			empareja(ClaseLexica.MAYEQ);
 			break;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.MEN,
