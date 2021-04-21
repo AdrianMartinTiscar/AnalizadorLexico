@@ -1,2 +1,5 @@
-module tiny0 {
+module Tiny0 {
+	exports asint;
+	exports alex;
+	exports errores;
 }

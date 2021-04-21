@@ -1,4 +1,4 @@
 real peso;
 bool pesado
 &&
-peso = ((7 * 6) + 8) / 5
+peso = 1

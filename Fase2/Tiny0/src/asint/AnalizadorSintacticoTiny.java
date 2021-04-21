@@ -14,16 +14,12 @@ public class AnalizadorSintacticoTiny {
 	private AnalizadorLexicoTiny alex;
 	private GestionErroresTiny0 errores;
 
-	public AnalizadorSintacticoTiny(Reader input) {
+	public AnalizadorSintacticoTiny(Reader input) throws IOException {
 		errores = new GestionErroresTiny0();
-		try {
-			alex = new AnalizadorLexicoTiny(input);
-			alex.fijaGestionErrores(errores);
-			sigToken();
-		} catch (IOException e) {
 
-			e.printStackTrace();
-		}
+		alex = new AnalizadorLexicoTiny(input);
+		alex.fijaGestionErrores(errores);
+		sigToken();
 
 	}
 
@@ -42,10 +38,12 @@ public class AnalizadorSintacticoTiny {
 			Dec();
 			RestoDec();
 			break;
-		case SEPAR: break;
-		default: errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PTOCOMA,
-				ClaseLexica.BOOL, ClaseLexica.INT, ClaseLexica.REAL);
-			
+		case SEPAR:
+			break;
+		default:
+			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PTOCOMA,
+					ClaseLexica.BOOL, ClaseLexica.INT, ClaseLexica.REAL);
+
 		}
 	}
 
@@ -85,24 +83,24 @@ public class AnalizadorSintacticoTiny {
 	}
 
 	private void Separacion() {
-		switch(anticipo.clase()) {
+		switch (anticipo.clase()) {
 		case SEPAR:
 			empareja(ClaseLexica.SEPAR);
 			break;
-		default: errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(),
-				ClaseLexica.SEPAR);
+		default:
+			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.SEPAR);
 		}
 	}
 
 	private void Instrs() {
-		switch(anticipo.clase()) {
+		switch (anticipo.clase()) {
 		case ID:
 			Instr();
 			restoIns();
 			break;
-		default: errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(),
-				ClaseLexica.ASIG);
-			
+		default:
+			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.ASIG);
+
 		}
 	}
 
@@ -110,7 +108,6 @@ public class AnalizadorSintacticoTiny {
 		switch (anticipo.clase()) {
 		case ID:
 			empareja(ClaseLexica.ID);
-//			igual();
 			empareja(ClaseLexica.IGUAL);
 			E0();
 			break;
@@ -132,46 +129,7 @@ public class AnalizadorSintacticoTiny {
 					ClaseLexica.EOF);
 		}
 	}
-//
-//	private void igual() {
-//		switch (anticipo.clase()) {
-//		case IGUAL:
-//			empareja(ClaseLexica.IGUAL);
-//			// expr();
-////			E0();
-//			break;
-//		default:
-//			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.IGUAL);
-//		}
-//
-//	}
 
-	/*
-	 * private void expr() { switch (anticipo.clase()) { case NENTERO:
-	 * empareja(ClaseLexica.NENTERO);
-	 * 
-	 * break; case NREAL: empareja(ClaseLexica.NREAL);
-	 * 
-	 * break; case ID: empareja(ClaseLexica.ID);
-	 * 
-	 * break; case TRUE: empareja(ClaseLexica.TRUE);
-	 * 
-	 * break; case FALSE: empareja(ClaseLexica.FALSE);
-	 * 
-	 * break; default: errores.errorSintactico(anticipo.fila(), anticipo.columna(),
-	 * anticipo.clase(), ClaseLexica.NENTERO, ClaseLexica.NREAL, ClaseLexica.ID,
-	 * ClaseLexica.TRUE, ClaseLexica.FALSE); }
-	 * 
-	 * }
-	 */
-	/*
-	 * private void E0() { switch (anticipo.clase()) { case NENTERO: case NREAL:
-	 * case ID: case TRUE: case FALSE: case PAP: case NOT: case RESTA: E1(); RE0();
-	 * break; default: errores.errorSintactico(anticipo.fila(), anticipo.columna(),
-	 * anticipo.clase(), ClaseLexica.NENTERO, ClaseLexica.NREAL, ClaseLexica.ID,
-	 * ClaseLexica.TRUE, ClaseLexica.FALSE, ClaseLexica.PAP, ClaseLexica.PAP,
-	 * ClaseLexica.NOT, ClaseLexica.RESTA); } }
-	 */
 	private void RestoE0() {
 		switch (anticipo.clase()) {
 		case RESTA:
@@ -367,7 +325,8 @@ public class AnalizadorSintacticoTiny {
 		case RESTA:
 			empareja(ClaseLexica.RESTA);
 			E5();
-		case EOF: break;
+		case EOF:
+			break;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PAP,
 					ClaseLexica.NOT, ClaseLexica.RESTA);
@@ -388,10 +347,8 @@ public class AnalizadorSintacticoTiny {
 		case NREAL:
 			empareja(ClaseLexica.NREAL);
 			break;
-		case EOF: break;
-//		case DEC:
-//			empareja(ClaseLexica.DEC);
-//			break;
+		case EOF:
+			break;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PAP,
 					ClaseLexica.NENTERO, ClaseLexica.DEC, ClaseLexica.EXPON);

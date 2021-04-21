@@ -90,7 +90,7 @@ public class AnalizadorLexicoTiny {
 			case RETPTOCOMA:
 				return unidadPuntoyComa();
 			case RETID:
-				if (hayLetra() || hayDigito())
+				if (hayLetra() || hayDigito() || hayBarraBaja())
 					transita(Estado.RETID);
 				else
 					return unidadId();
@@ -106,13 +106,7 @@ public class AnalizadorLexicoTiny {
 					return unidadEntera();
 				break;
 			case RETIDEC:
-				if(hayCero())//x.0? idea: hacer un estado extra que venga de
-					//RetEnt y RetZero y si encuentra un 0 lo mandamos
-					//a otro estado (con otro digito diferente lo
-					//mandamos aqui, y si no encuentra nada error) 
-					//en el que si no encuentra nada más
-					//devolvemos un real, y si encuentra algo distinto lo 
-					//mandamos aqui
+				if(hayCero())
 					transita(Estado.RETIDEC);
 				else if(hayDigitoPos())
 					transita(Estado.RETDEC);
@@ -127,7 +121,6 @@ public class AnalizadorLexicoTiny {
 				else if(hayExpo())
 					transita(Estado.RETIEXP);
 				else
-					//return unidadDecimal();
 					return unidadReal();
 				break;
 			case RETIEXP:
@@ -143,7 +136,6 @@ public class AnalizadorLexicoTiny {
 				if(hayDigito())
 					transita(Estado.RETEXP);
 				else
-					//return unidadExpo();
 					return unidadReal();
 				break;
 
@@ -265,7 +257,7 @@ public class AnalizadorLexicoTiny {
 	}
 
 	private boolean hayLetra() {
-		return sigCar >= 'a' && sigCar <= 'z' || sigCar >= 'A' && sigCar <= 'z';
+		return (sigCar >= 'a' && sigCar <= 'z') || (sigCar >= 'A' && sigCar <= 'Z');
 	}
 
 	private boolean hayDigitoPos() {
@@ -338,6 +330,10 @@ public class AnalizadorLexicoTiny {
 		
 	private boolean hayEOF() {
 		return sigCar == -1;
+	}
+	
+	private boolean hayBarraBaja() {
+		return sigCar == '_';
 	}
 
 	private UnidadLexica unidadId() {
@@ -450,17 +446,5 @@ public class AnalizadorLexicoTiny {
 	
 	public void fijaGestionErrores(GestionErroresTiny0 errores) {
 	   this.errores = errores;
-	}
-	
-	public static void main(String arg[]) throws IOException {
-
-		Reader input = new InputStreamReader(new FileInputStream(arg[0]));
-		AnalizadorLexicoTiny al = new AnalizadorLexicoTiny(input);
-		UnidadLexica unidad;
-		do {
-			unidad = al.sigToken();
-			System.out.println(unidad);
-		} while (unidad.clase() != ClaseLexica.EOF);
-
 	}
 }

@@ -4,7 +4,7 @@ import alex.ClaseLexica;
 
 public class GestionErroresTiny0 {
 	   public void errorLexico(int fila, int col, String lexema) {
-		     System.out.println("ERROR fila "+fila+","+col+": Caracter inexperado: "+lexema); 
+		     System.out.println("ERROR fila "+fila+","+col+": Caracter inesperado: "+lexema); 
 		     System.exit(1);
 		   }  
 		   public void errorSintactico(int fila, int col, ClaseLexica encontrada, 

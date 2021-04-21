@@ -15,8 +15,8 @@ proc incrementa(int & v, int delta) {
  var int y
  &&
  v = v;
- x = r*2 + 1;
- y = 2*x;
+ x = r * 2 + 1;
+ y = 2 * x;
  write y
 }
 &&
