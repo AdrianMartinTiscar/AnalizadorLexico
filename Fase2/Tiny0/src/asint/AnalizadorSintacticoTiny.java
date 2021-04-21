@@ -41,7 +41,7 @@ public class AnalizadorSintacticoTiny {
 		case SEPAR:
 			break;
 		default:
-			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PTOCOMA,
+			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(),
 					ClaseLexica.BOOL, ClaseLexica.INT, ClaseLexica.REAL);
 
 		}
