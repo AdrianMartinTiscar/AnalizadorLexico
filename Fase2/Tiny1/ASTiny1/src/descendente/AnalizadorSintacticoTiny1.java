@@ -11,7 +11,6 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       Decs();
       jj_consume_token(Separacion);
       Instrs();
-      jj_consume_token(0);
       break;
     case ptrue:
     case pfalse:
@@ -257,14 +256,14 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       jj_consume_token(pif);
       expr();
       jj_consume_token(then);
-      instrOp();
+      Instrs();
       restoIf();
       break;
     case pwhile:
       jj_consume_token(pwhile);
       expr();
       jj_consume_token(pdo);
-      instrOp();
+      Instrs();
       jj_consume_token(endwhile);
       break;
     case read:
@@ -308,57 +307,13 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       break;
     case pelse:
       jj_consume_token(pelse);
-      instrOp();
+      Instrs();
       jj_consume_token(endif);
       break;
     default:
       jj_la1[10] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
-    }
-  }
-
-  final public void instrOp() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case ptrue:
-    case pfalse:
-    case not:
-    case pnull:
-    case pif:
-    case pwhile:
-    case call:
-    case pnew:
-    case delete:
-    case read:
-    case write:
-    case nl:
-    case id:
-    case Nentero:
-    case Nreal:
-    case literalCad:
-    case 45:
-    case 49:
-    case 54:
-    case 58:
-      Instr();
-      listains();
-      break;
-    default:
-      jj_la1[11] = jj_gen;
-
-    }
-  }
-
-  final public void listains() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case PtoComa:
-      jj_consume_token(PtoComa);
-      Instr();
-      listains();
-      break;
-    default:
-      jj_la1[12] = jj_gen;
-
     }
   }
 
@@ -385,7 +340,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       LExpresiones();
       break;
     default:
-      jj_la1[13] = jj_gen;
+      jj_la1[11] = jj_gen;
 
     }
   }
@@ -398,45 +353,13 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       LExpresiones();
       break;
     default:
-      jj_la1[14] = jj_gen;
+      jj_la1[12] = jj_gen;
 
     }
   }
 
   final public void expr() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Nentero:
-      jj_consume_token(Nentero);
-      break;
-    case Nreal:
-      jj_consume_token(Nreal);
-      break;
-    case id:
-      jj_consume_token(id);
-      break;
-    case pnull:
-      jj_consume_token(pnull);
-      break;
-    case literalCad:
-      jj_consume_token(literalCad);
-      break;
-    case ptrue:
-      jj_consume_token(ptrue);
-      break;
-    case pfalse:
-      jj_consume_token(pfalse);
-      break;
-    case not:
-    case 45:
-    case 54:
-    case 58:
-      E0();
-      break;
-    default:
-      jj_la1[15] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+    E0();
   }
 
   final public void E0() throws ParseException {
@@ -455,7 +378,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       E0();
       break;
     default:
-      jj_la1[16] = jj_gen;
+      jj_la1[13] = jj_gen;
 
     }
   }
@@ -474,7 +397,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       Rest2E1();
       break;
     default:
-      jj_la1[17] = jj_gen;
+      jj_la1[14] = jj_gen;
 
     }
   }
@@ -495,7 +418,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       Rest2E2();
       break;
     default:
-      jj_la1[18] = jj_gen;
+      jj_la1[15] = jj_gen;
 
     }
   }
@@ -515,7 +438,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       restE3();
       break;
     default:
-      jj_la1[19] = jj_gen;
+      jj_la1[16] = jj_gen;
 
     }
   }
@@ -530,12 +453,19 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       jj_consume_token(not);
       E4();
       break;
+    case ptrue:
+    case pfalse:
+    case pnull:
+    case id:
+    case Nentero:
+    case Nreal:
+    case literalCad:
     case 45:
     case 58:
       E5();
       break;
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[17] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -555,7 +485,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       Resto2E5();
       break;
     default:
-      jj_la1[21] = jj_gen;
+      jj_la1[18] = jj_gen;
 
     }
   }
@@ -576,7 +506,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       jj_consume_token(id);
       break;
     default:
-      jj_la1[22] = jj_gen;
+      jj_la1[19] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -588,20 +518,56 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       jj_consume_token(58);
       E6();
       break;
+    case ptrue:
+    case pfalse:
+    case pnull:
+    case id:
+    case Nentero:
+    case Nreal:
+    case literalCad:
     case 45:
       E7();
       break;
     default:
-      jj_la1[23] = jj_gen;
+      jj_la1[20] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
   }
 
   final public void E7() throws ParseException {
-    jj_consume_token(45);
-    E0();
-    jj_consume_token(46);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case 45:
+      jj_consume_token(45);
+      E0();
+      jj_consume_token(46);
+      break;
+    case Nentero:
+      jj_consume_token(Nentero);
+      break;
+    case Nreal:
+      jj_consume_token(Nreal);
+      break;
+    case ptrue:
+      jj_consume_token(ptrue);
+      break;
+    case pfalse:
+      jj_consume_token(pfalse);
+      break;
+    case literalCad:
+      jj_consume_token(literalCad);
+      break;
+    case id:
+      jj_consume_token(id);
+      break;
+    case pnull:
+      jj_consume_token(pnull);
+      break;
+    default:
+      jj_la1[21] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
   }
 
   final public void op1AI() throws ParseException {
@@ -613,7 +579,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       jj_consume_token(or);
       break;
     default:
-      jj_la1[24] = jj_gen;
+      jj_la1[22] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -638,7 +604,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       jj_consume_token(53);
       break;
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[23] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -650,7 +616,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       jj_consume_token(53);
       break;
     default:
-      jj_la1[26] = jj_gen;
+      jj_la1[24] = jj_gen;
 
     }
   }
@@ -667,7 +633,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       jj_consume_token(63);
       break;
     default:
-      jj_la1[27] = jj_gen;
+      jj_la1[25] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -678,7 +644,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
   public Token token, jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[28];
+  final private int[] jj_la1 = new int[26];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -686,10 +652,10 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       jj_la1_1();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x91e3000,0x0,0x80000,0x0,0x0,0x4e00,0xb0004e00,0x0,0x0,0x9163000,0xc00000,0x9163000,0x0,0x63000,0x0,0x63000,0x0,0x18000,0x0,0x0,0x20000,0x0,0x0,0x0,0x18000,0x0,0x0,0x0,};
+      jj_la1_0 = new int[] {0x91e3000,0x0,0x80000,0x0,0x0,0x4e00,0xb0004e00,0x0,0x0,0x9163000,0xc00000,0x63000,0x0,0x0,0x18000,0x0,0x0,0x63000,0x0,0x0,0x43000,0x43000,0x18000,0x0,0x0,0x0,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x4423e7f,0x100,0x60,0x8200,0x10000,0x0,0x200,0x100,0x100,0x4423e1f,0x0,0x4423e1f,0x100,0x4403e00,0x10000,0x4403e00,0xc00000,0x0,0x38200000,0xc4000000,0x4402000,0x3080000,0x3080000,0x4002000,0x0,0x38200000,0x200000,0xc4000000,};
+      jj_la1_1 = new int[] {0x4423e7f,0x100,0x60,0x8200,0x10000,0x0,0x200,0x100,0x100,0x4423e1f,0x0,0x4403e00,0x10000,0xc00000,0x0,0x38200000,0xc4000000,0x4403e00,0x3080000,0x3080000,0x4003e00,0x3e00,0x0,0x38200000,0x200000,0xc4000000,};
    }
 
   public AnalizadorSintacticoTiny1(java.io.InputStream stream) {
@@ -698,7 +664,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.InputStream stream) {
@@ -707,7 +673,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   public AnalizadorSintacticoTiny1(java.io.Reader stream) {
@@ -716,7 +682,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.Reader stream) {
@@ -725,7 +691,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   public AnalizadorSintacticoTiny1(AnalizadorSintacticoTiny1TokenManager tm) {
@@ -733,7 +699,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(AnalizadorSintacticoTiny1TokenManager tm) {
@@ -741,7 +707,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   final private Token jj_consume_token(int kind) throws ParseException {
@@ -796,7 +762,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 28; i++) {
+    for (int i = 0; i < 26; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
