@@ -20,7 +20,7 @@ public class AnalizadorLexicoTiny {
 	private GestionErroresTiny0 errores;
 
 	private static enum Estado {
-		INICIO, RETEOF,RETPTOCOMA, RETID, RETENT, RETIDEC,
+		INICIO, RETEOF,RETPTOCOMA, RETID, RETENT, RETIDEC, RETIDEC2,
 		RETDEC, RETEXP, RETISIGN, RETIEXP, RETRES, RETZERO,
 		RETSUM, RETAMP, RETDIV, RETMUL, RETMEN, RETMAY,
 		RETEQ, RETDIS, RETPAP, RETPCIE, RETIDIS, RETIG, RETMAYIG,
@@ -106,18 +106,26 @@ public class AnalizadorLexicoTiny {
 					return unidadEntera();
 				break;
 			case RETIDEC:
-				if(hayCero())
-					transita(Estado.RETIDEC);
-				else if(hayDigitoPos())
+				if(hayDigito())
 					transita(Estado.RETDEC);
 				else
 					error();
 				break;
+			case RETIDEC2:
+				
+				if(hayDigitoPos())
+					transita(Estado.RETDEC);
+				else if (hayCero())
+					transita(Estado.RETIDEC2);
+				else
+					error();
+				break;
+				
 			case RETDEC:
 				if(hayDigitoPos())
 					transita(Estado.RETDEC);
 				else if(hayCero())
-					transita(Estado.RETIDEC);
+					transita(Estado.RETIDEC2);
 				else if(hayExpo())
 					transita(Estado.RETIEXP);
 				else
@@ -440,7 +448,7 @@ public class AnalizadorLexicoTiny {
 	}
 	
 	private void error() {
-		System.err.println("(" + filaActual + ',' + columnaActual + "):Caracter inexperado");
+		System.err.println("(" + filaActual + ',' + columnaActual + "):Caracter inesperado");
 		System.exit(1);
 	}
 	
