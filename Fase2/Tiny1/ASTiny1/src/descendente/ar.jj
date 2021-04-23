@@ -82,7 +82,7 @@ PARSER_END(AnalizadorSintacticoTiny1)
   void LExpresiones(): {} {"," expr() LExpresiones() | {}}
   void expr(): {} {E0()}
   void E0(): {} {E1() restoE0()}
-  void restoE0(): {} {<menos> E1() | <mas> E0() | {}}
+  void restoE0(): {} {<menos> E1() restoE0()| <mas> E0()| {}}
   void E1(): {} {E2() Rest2E1()}
   void Rest2E1(): {} {op1AI() E2() Rest2E1() | {}}
   void E2(): {} {E3() Rest2E2()}

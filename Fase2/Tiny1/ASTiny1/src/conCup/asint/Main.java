@@ -23,5 +23,17 @@ public class Main {
        catch(Exception e) {
     	   System.out.println(e.getMessage());
        }
+       
+     input = new InputStreamReader(new FileInputStream("input.txt"));
+  	 AnalizadorLexicoTiny alex = new AnalizadorLexicoTiny(input);
+  	 AnalizadorSintacticoTiny asint = new AnalizadorSintacticoTiny(alex);
+  	 //asint.setScanner(alex);
+  	 try {
+		asint.parse();
+		System.out.println("OK");
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
     }        
 } 

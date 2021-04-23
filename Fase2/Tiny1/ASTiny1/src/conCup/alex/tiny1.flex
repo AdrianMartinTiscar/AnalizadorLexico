@@ -1,6 +1,6 @@
-package tiny1;
+package conCup.alex;
 
-import errors.GestionErroresTiny;
+import conCup.errors.GestionErroresTiny;
 
 %%
 %cup
@@ -32,8 +32,8 @@ import errors.GestionErroresTiny;
 letra  = ([A-Z]|[a-z])
 digitoPositivo = [1-9]
 digito = ({digitoPositivo}|0)
-parteEntera = {digitoPositivo}{digito}*
-parteDecimal = (\.{digito}*{digitoPositivo}) | 0 
+parteEntera = ({digitoPositivo}{digito}*) | 0
+parteDecimal = \.(({digito}*{digitoPositivo}) | 0) 
 parteExponencial = (E|e)[\+,\-]?{parteEntera}
 ignorada = [ \t\r\b\n]
 comentario = #[^\n]*
@@ -77,10 +77,10 @@ suma = \+
 resta = \-
 mul = \*
 div = \/
-men = <
-may= >
-MenEq= <=
-MayEq= >=
+men = \<
+may = \>
+MenEq= \<\=
+MayEq= \>\=
 Equiv= \=\=
 Dist = \!\=
 PAp= \(

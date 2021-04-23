@@ -66,7 +66,7 @@ LExpresiones ::= COMA expr LExpresiones | ;
 expr ::= E0 ;
 
 E0 ::= E1 restoE0 ;
-restoE0 ::= RESTA E1 | SUMA E0 | ;
+restoE0 ::= RESTA E1 restoE0 | SUMA E0 | ;
 
 E1 ::= E2 Rest2E1 ;
 Rest2E1 ::= op1AI E2 Rest2E1 | ;

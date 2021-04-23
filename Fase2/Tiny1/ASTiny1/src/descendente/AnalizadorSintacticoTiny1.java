@@ -408,6 +408,7 @@ public class AnalizadorSintacticoTiny1 implements AnalizadorSintacticoTiny1Const
     case menos:
       jj_consume_token(menos);
       E1();
+      restoE0();
       break;
     case mas:
       jj_consume_token(mas);
