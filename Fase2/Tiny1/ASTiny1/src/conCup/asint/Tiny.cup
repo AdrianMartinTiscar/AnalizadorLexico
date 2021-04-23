@@ -27,7 +27,7 @@ terminal     INT, REAL, BOOL, STRING, AND, OR, NOT, NULL, TRUE, FALSE, PROC, IF,
 
 
 non terminal  Programa, Decs, restoDec, Dec, paramForm, paramFormD, restParamFormD, LparamForm, bloque,
-              tipoBas, tipo, tarray, trecord, campos, campo, tpointer, Instrs, restoIns, Instr,
+              tipoBas, tipo, tarray, trecord, campos, campo, tpointer, Instrs, restoIns, Instr, InstrOp,
               restoIf, parReales, ExpresionesOp, LExpresiones, expr, E0, restoE0, E1, Rest2E1,
               E2, Rest2E2, E3, restE3, E4, E5, Resto2E5, RestoE5, E6, E7, op1AI, op2AI, resto, op3NA;
 
@@ -55,8 +55,9 @@ tpointer ::= POINTER tipo ;
 Instrs ::= Instr restoIns ;
 restoIns ::= PTOCOMA Instrs | ;
 
-Instr ::= ID IGUAL expr | IF expr THEN Instrs restoIf | WHILE expr DO Instrs ENDWHILE | READ expr | WRITE expr | NL | NEW expr |
+Instr ::= ID IGUAL expr | IF expr THEN InstrOp restoIf | WHILE expr DO InstrOp ENDWHILE | READ expr | WRITE expr | NL | NEW expr |
         DELETE expr | CALL ID parReales | bloque ;
+InstrOp ::= Instr restoIns | ;
 restoIf ::= ENDIF | ELSE Instrs ENDIF ;
 parReales ::= PAP ExpresionesOp PCIE ;
 ExpresionesOp ::= expr LExpresiones | ;

@@ -42,10 +42,14 @@ public interface AnalizadorSintacticoTiny1Constants {
   int type = 38;
   int Separacion = 39;
   int PtoComa = 40;
-  int id = 41;
-  int Nentero = 42;
-  int Nreal = 43;
-  int literalCad = 44;
+  int asig = 41;
+  int equiv = 42;
+  int mas = 43;
+  int menos = 44;
+  int id = 45;
+  int Nentero = 46;
+  int Nreal = 47;
+  int literalCad = 48;
 
   int DEFAULT = 0;
 
@@ -91,6 +95,10 @@ public interface AnalizadorSintacticoTiny1Constants {
     "\"type\"",
     "\"&&\"",
     "\";\"",
+    "\"=\"",
+    "\"==\"",
+    "\"+\"",
+    "\"-\"",
     "<id>",
     "<Nentero>",
     "<Nreal>",
@@ -103,15 +111,12 @@ public interface AnalizadorSintacticoTiny1Constants {
     "\"}\"",
     "\"[\"",
     "\"]\"",
-    "\"=\"",
-    "\"-\"",
-    "\"+\"",
     "\".\"",
     "\"->\"",
     "\"*\"",
     "\">\"",
     "\"<\"",
-    "\"!\"",
+    "\"!=\"",
     "\"/\"",
     "\"%\"",
   };
