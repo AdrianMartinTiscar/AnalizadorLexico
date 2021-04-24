@@ -24,7 +24,7 @@ public class Main {
     	   System.out.println(e.getMessage());
        }
        
-     input = new InputStreamReader(new FileInputStream("input.txt"));
+     input = new InputStreamReader(new FileInputStream(args[0]));
   	 AnalizadorLexicoTiny alex = new AnalizadorLexicoTiny(input);
   	 AnalizadorSintacticoTiny asint = new AnalizadorSintacticoTiny(alex);
   	 //asint.setScanner(alex);

@@ -88,8 +88,7 @@ E7 ::= PAP E0 PCIE | NENTERO | NREAL | ID | NULL | LITCAD | TRUE | FALSE ;
 
 op1AI ::= AND | OR ;
 
-op2AI ::= MAY resto | MEN resto | EQUIV | DIST ;
-resto ::= IGUAL | ;
+op2AI ::= MAY | MEN | EQUIV | DIST | MENEQ | MAYEQ;
 
 op3NA ::= MUL | DIV | PORC;
 
