@@ -1,0 +1,11 @@
+var int a;
+var real b;
+type c;
+proc p{
+ var bool t;
+ var bool f
+ &&
+ y = t and f
+}
+&&
+a = (b*a)%d
