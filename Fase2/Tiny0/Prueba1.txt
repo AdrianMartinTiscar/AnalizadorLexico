@@ -1,4 +1,5 @@
 real peso;
 bool pesado
 &&
-peso = 1
+peso = 1 + (1 / 6);
+pesado = hola + buenas

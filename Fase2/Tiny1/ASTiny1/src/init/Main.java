@@ -8,7 +8,7 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		if (args.length != 2) {
 			System.out.println(
-					"Argumentos requerridos 2: i archivo a analizar; ii desc (analisis descendente)/ asc (analisis ascendente).");
+					"2 argumentos requeridos: I: archivo a analizar; II: desc (analisis descendente)/ asc (analisis ascendente).");
 		} else {
 			System.out.println("Resultado del analizador " + args[1] + ":");
 			if (args[1].equals("desc")) {

@@ -1,5 +1,8 @@
 real peso
 &&
+peso = 0.0;
+peso = +0.0;
+peso = -0.0;
 peso = -5;
 peso = 5;
 peso = +5;
