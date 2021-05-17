@@ -7,12 +7,19 @@ import alex.AnalizadorLexicoTiny;
 import alex.ClaseLexica;
 import alex.UnidadLexica;
 import errores.GestionErroresTiny0;
+import procesamiento.SemOps;
+import procesamiento.TinyASint.Decs;
+import procesamiento.TinyASint.Dec;
+import procesamiento.TinyASint.*;
+import procesamiento.TinyASint.Inst;
+import procesamiento.TinyASint.Insts;
 
 public class AnalizadorSintacticoTiny {
 
 	private UnidadLexica anticipo;
 	private AnalizadorLexicoTiny alex;
 	private GestionErroresTiny0 errores;
+	private SemOps sem;
 
 	public AnalizadorSintacticoTiny(Reader input) throws IOException {
 		errores = new GestionErroresTiny0();
@@ -20,68 +27,83 @@ public class AnalizadorSintacticoTiny {
 		alex = new AnalizadorLexicoTiny(input);
 		alex.fijaGestionErrores(errores);
 		sigToken();
+		sem = new SemOps();
 
 	}
-
-	public void Programa() {
-		Decs();
-		Separacion();
-		Instrs();
+	
+	public Programa Programa() {
+		Decs decs = Decs();
+		Separacion(); //Y esto, ninio?
+		Insts inss = Instrs();
 		empareja(ClaseLexica.EOF);
+		return sem.programa(decs, inss);
 	}
 
-	private void Decs() {
+	private Decs Decs() {
 		switch (anticipo.clase()) {
 		case BOOL:
 		case INT:
 		case REAL:
-			Dec();
-			RestoDec();
-			break;
+			Dec dec = Dec();
+			return RestoDec(sem.declaracion_una(dec));
 		case SEPAR:
-			break;
+			return null;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(),
 					ClaseLexica.BOOL, ClaseLexica.INT, ClaseLexica.REAL);
+			return null;
 
 		}
 	}
 
-	private void RestoDec() {
+	private Decs RestoDec(Decs decsh) {
 		switch (anticipo.clase()) {
 		case PTOCOMA:
 			empareja(ClaseLexica.PTOCOMA);
-			Decs();
-			break;
+			Dec dec = Dec();
+			return RestoDec(sem.declaracion_varias(decsh, dec));
 		case SEPAR:
-			break;
+			return decsh;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PTOCOMA,
 					ClaseLexica.SEPAR);
+			return null;
 		}
 	}
 
-	private void Dec() {
+	private Dec Dec() {
+		UnidadLexica tipo;
+		UnidadLexica id;
 		switch (anticipo.clase()) {
 		case INT:
+			tipo = anticipo;
 			empareja(ClaseLexica.INT);
+			id = anticipo;
 			empareja(ClaseLexica.ID);
-			break;
+			return sem.dec(sem.str(tipo.lexema(),tipo.fila(),tipo.columna()),
+                    sem.str(id.lexema(),id.fila(),id.columna()));
 		case BOOL:
+			tipo = anticipo;
 			empareja(ClaseLexica.BOOL);
+			id = anticipo;
 			empareja(ClaseLexica.ID);
-			break;
+			return sem.dec(sem.str(tipo.lexema(),tipo.fila(),tipo.columna()),
+                    sem.str(id.lexema(),id.fila(),id.columna()));
 		case REAL:
+			tipo = anticipo;
 			empareja(ClaseLexica.REAL);
+			id = anticipo;
 			empareja(ClaseLexica.ID);
-			break;
+			return sem.dec(sem.str(tipo.lexema(),tipo.fila(),tipo.columna()),
+                    sem.str(id.lexema(),id.fila(),id.columna()));
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.INT,
 					ClaseLexica.BOOL, ClaseLexica.REAL);
+			return null;
 		}
 
 	}
-
+	// revisar
 	private void Separacion() {
 		switch (anticipo.clase()) {
 		case SEPAR:
@@ -91,42 +113,49 @@ public class AnalizadorSintacticoTiny {
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.SEPAR);
 		}
 	}
-
-	private void Instrs() {
+	
+	private Insts Instrs() {
 		switch (anticipo.clase()) {
 		case ID:
-			Instr();
-			restoIns();
-			break;
+			Inst ins = Instr();
+			return restoIns(sem.instruccion_una(ins));
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.ID, ClaseLexica.EXPRES);
+			return null;
 
 		}
 	}
 
-	private void Instr() {
+	private Inst Instr() {
 		switch (anticipo.clase()) {
 		case ID:
+			UnidadLexica id = anticipo;
 			empareja(ClaseLexica.ID);
 			empareja(ClaseLexica.IGUAL);
-			E0();
-			break;
+			UnidadLexica e = anticipo;
+			Exp exp = E0();
+			return sem.instruccion(sem.str(id.lexema(), id.fila(), id.columna()),
+					sem.str(e.lexema(), e.fila(), e.columna()));
+			
+			
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.ID);
+			return null;
 		}
 	}
 
-	private void restoIns() {
+	private Insts restoIns(Insts insh) {
 		switch (anticipo.clase()) {
 		case PTOCOMA:
 			empareja(ClaseLexica.PTOCOMA);
-			Instrs();
-			break;
+			Inst ins = Instr();
+			return restoIns(sem.instruccion_varias(insh, ins));
 		case EOF:
-			break;
+			return null;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PTOCOMA,
 					ClaseLexica.EOF);
+			return null;
 		}
 	}
 
