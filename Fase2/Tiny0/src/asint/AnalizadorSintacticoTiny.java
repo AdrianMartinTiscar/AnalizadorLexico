@@ -159,27 +159,28 @@ public class AnalizadorSintacticoTiny {
 		}
 	}
 
-	private void RestoE0() {
+	private Exp RestoE0(Exp exph) {
 		switch (anticipo.clase()) {
 		case RESTA:
 			empareja(ClaseLexica.RESTA);
-			E1();
-			break;
+			Exp e1 = E1();
+			return sem.resta(exph, e1);
 		case SUMA:
 			empareja(ClaseLexica.SUMA);
-			E0();
-			break;
+			Exp e0 = E0();
+			return sem.suma(exph, e0);
 		case EOF:
 		case PTOCOMA:
 		case PCIE:
-			break;
+			return exph;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.RESTA,
 					ClaseLexica.SUMA, ClaseLexica.PTOCOMA, ClaseLexica.EOF);
+			return null;
 		}
 	}
 
-	private void E0() {
+	private Exp E0() {
 		switch (anticipo.clase()) {
 		case EXPRES:
 		case PAP:
@@ -188,23 +189,23 @@ public class AnalizadorSintacticoTiny {
 		case ID:
 		case SUMA:
 		case RESTA:
-			E1();
-			RestoE0();
-			break;
+			Exp exp = E1();
+			return RestoE0(exp);
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.RESTA,
 					ClaseLexica.NOT, ClaseLexica.PAP);
+			return null;
 		}
 	}
 
-	private void Rest2E1() {
+	private Exp Rest2E1(Exp exph) {
 		switch (anticipo.clase()) {
 		case AND:
 		case OR:
-			op1AI();
-			E2();
-			Rest2E1();
-			break;
+			String op = op1AI();
+			Exp e2 = E2();
+			Exp eRes = Rest2E1(e2);
+			return sem.exp(op, exph, eRes);
 		case EXPRES:
 		case NENTERO:
 		case NREAL:
@@ -214,14 +215,15 @@ public class AnalizadorSintacticoTiny {
 		case PCIE:
 		case SUMA:
 		case RESTA:
-			break;
+			return exph;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.AND,
 					ClaseLexica.OR, ClaseLexica.PCIE, ClaseLexica.SUMA, ClaseLexica.RESTA, ClaseLexica.PTOCOMA, ClaseLexica.PCIE);
+			return null;
 		}
 	}
 
-	private void E1() {
+	private Exp E1() {
 		switch (anticipo.clase()) {
 		case EXPRES:
 		case PAP:
@@ -230,16 +232,16 @@ public class AnalizadorSintacticoTiny {
 		case ID:
 		case SUMA:
 		case RESTA:
-			E2();
-			Rest2E1();
-			break;
+			Exp e2 = E2();
+			return Rest2E1(e2);
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.RESTA,
 					ClaseLexica.NOT, ClaseLexica.PAP);
+			return null;
 		}
 	}
 
-	private void Rest2E2() {
+	private Exp Rest2E2(Exp exph) {
 		switch (anticipo.clase()) {
 		case MAY:
 		case MEN:
@@ -247,10 +249,10 @@ public class AnalizadorSintacticoTiny {
 		case DIST:
 		case MENEQ:
 		case MAYEQ:
-			op2AI();
-			E3();
-			Rest2E2();
-			break;
+			String op = op2AI();
+			Exp e3 = E3();
+			Exp eRes = Rest2E2(e3);
+			return sem.exp(op, exph,  eRes);
 		case EXPRES:
 		case NENTERO:
 		case NREAL:
@@ -262,15 +264,16 @@ public class AnalizadorSintacticoTiny {
 		case RESTA:
 		case AND:
 		case OR:
-			break;
+			return exph;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.MAY,
 					ClaseLexica.MEN, ClaseLexica.EQUIV, ClaseLexica.DIST, ClaseLexica.MENEQ, ClaseLexica.MAYEQ,
 					ClaseLexica.SUMA, ClaseLexica.RESTA, ClaseLexica.PTOCOMA, ClaseLexica.EOF);
+			return null;
 		}
 	}
 
-	private void E2() {
+	private Exp E2() {
 		switch (anticipo.clase()) {
 		case EXPRES:
 		case PAP:
@@ -279,22 +282,22 @@ public class AnalizadorSintacticoTiny {
 		case ID:
 		case SUMA:
 		case RESTA:
-			E3();
-			Rest2E2();
-			break;
+			Exp e3 = E3();
+			return Rest2E2(e3);
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PAP,
 					ClaseLexica.RESTA, ClaseLexica.NOT);
+			return null;
 		}
 	}
 
-	private void RestE3() {
+	private Exp RestE3(Exp exph) {
 		switch (anticipo.clase()) {
 		case MUL:
 		case DIV:
-			op3NA();
-			E4();
-			break;
+			String op = op3NA();
+			Exp e4 = E4();
+			return sem.exp(op, exph, e4);
 		case EXPRES:
 		case PAP:
 		case NENTERO:
@@ -313,17 +316,18 @@ public class AnalizadorSintacticoTiny {
 		case DIST:
 		case MENEQ:
 		case MAYEQ:
-			break;
+			return exph;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.MUL,
 					ClaseLexica.DIV, ClaseLexica.PCIE, ClaseLexica.SUMA,
 					ClaseLexica.RESTA, ClaseLexica.PTOCOMA, ClaseLexica.MAY, ClaseLexica.MEN, ClaseLexica.IGUAL,
 					ClaseLexica.AND, ClaseLexica.OR, ClaseLexica.EOF);
+			return null;
 
 		}
 	}
 
-	private void E3() {
+	private Exp E3() {
 		switch (anticipo.clase()) {
 		case EXPRES:
 		case PAP:
@@ -332,82 +336,89 @@ public class AnalizadorSintacticoTiny {
 		case ID:
 		case SUMA:
 		case RESTA:
-			E4();
-			RestE3();
-			break;
+			Exp e4 = E4();
+			return RestE3(e4);
+			
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PAP,
 					ClaseLexica.NOT, ClaseLexica.RESTA);
+			return null;
 
 		}
 	}
 
-	private void E4() {
+	private Exp E4() {
 		switch (anticipo.clase()) {
 		case NOT:
-			E4();
-			break;
+			return sem.not(E4());
 		case EXPRES:
 		case PAP:
 		case NENTERO:
 		case NREAL:
 		case ID:
-			E5();
-			break;
-		case SUMA:
+			return E5();
+		//Suma debería estar?
+		/*case SUMA:
 			empareja(ClaseLexica.SUMA);
 			E5();
+			*/
 		case RESTA:
 			empareja(ClaseLexica.RESTA);
-			E5();
+			return sem.neg(E5());
 		case EOF:
-			break;
+			return null;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PAP,
 					ClaseLexica.NOT, ClaseLexica.RESTA);
+			return null;
 
 		}
 	}
 
-	private void E5() {
+	private Exp E5() {
 		switch (anticipo.clase()) {
 		case PAP:
 			empareja(ClaseLexica.PAP);
-			E0();
+			Exp e = E0();
 			empareja(ClaseLexica.PCIE);
-			break;
+			return e;
 		case NENTERO:
+			UnidadLexica entero = anticipo;
 			empareja(ClaseLexica.NENTERO);
-			break;
+			return sem.num(sem.str(entero.lexema(), entero.fila(), entero.columna()));
 		case NREAL:
+			UnidadLexica real = anticipo;
 			empareja(ClaseLexica.NREAL);
-			break;
+			return sem.num(sem.str(real.lexema(), real.fila(), real.columna()));
 		case ID:
+			UnidadLexica id = anticipo;
 			empareja(ClaseLexica.ID);
-			break;
+			return sem.id(sem.str(id.lexema(), id.fila(), id.columna()));
 		case EOF:
-			break;
+			return null;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PAP);
+			return null;
 
 		}
 	}
 
-	private void op1AI() {
+	private String op1AI() {
 		switch (anticipo.clase()) {
 		case AND:
 			empareja(ClaseLexica.AND);
-			break;
+			return "and";
 		case OR:
 			empareja(ClaseLexica.OR);
-			break;
+			return "or";
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.AND,
 					ClaseLexica.OR);
+			return null;
 
 		}
 	}
-
+	//Creo que esto no hace nada
 	private void resto() {
 		switch (anticipo.clase()) {
 		case MENEQ:
@@ -422,43 +433,45 @@ public class AnalizadorSintacticoTiny {
 		}
 	}
 
-	private void op2AI() {
+	private String op2AI() {
 		switch (anticipo.clase()) {
 		case MEN:
 			empareja(ClaseLexica.MEN);
-			break;
+			return "<";
 		case MAY:
 			empareja(ClaseLexica.MAY);
-			break;
+			return ">";
 		case EQUIV:
 			empareja(ClaseLexica.EQUIV);
-			break;
+			return "==";
 		case DIST:
 			empareja(ClaseLexica.DIST);
-			break;
+			return "!=";
 		case MENEQ:
 			empareja(ClaseLexica.MENEQ);
-			break;
+			return "<=";
 		case MAYEQ:
 			empareja(ClaseLexica.MAYEQ);
-			break;
+			return ">=";
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.MEN,
 					ClaseLexica.EQUIV, ClaseLexica.MAY, ClaseLexica.DIST);
+			return null;
 		}
 	}
 
-	private void op3NA() {
+	private String op3NA() {
 		switch (anticipo.clase()) {
 		case MUL:
 			empareja(ClaseLexica.MUL);
-			break;
+			return "*";
 		case DIV:
 			empareja(ClaseLexica.DIV);
-			break;
+			return "/";
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.MUL,
 					ClaseLexica.DIV);
+			return null;
 		}
 
 	}
