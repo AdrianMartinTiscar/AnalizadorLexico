@@ -2,7 +2,7 @@ package procesamiento;
 
 import procesamiento.TinyASint.*;
 
-public class ProcesamientoPorDefecto {
+public class ProcesamientoPorDefecto implements Procesamiento{
 	public void procesa (Programa prog) {}
 	public void procesa (Declaracion_una dec){}
 	public void procesa (Declaracion_varias decs){}

@@ -33,7 +33,7 @@ public class AnalizadorSintacticoTiny {
 	
 	public Programa Programa() {
 		Decs decs = Decs();
-		Separacion(); //Y esto, ninio?
+		empareja(ClaseLexica.SEPAR);
 		Insts inss = Instrs();
 		empareja(ClaseLexica.EOF);
 		return sem.programa(decs, inss);
@@ -72,29 +72,25 @@ public class AnalizadorSintacticoTiny {
 	}
 
 	private Dec Dec() {
-		UnidadLexica tipo;
 		UnidadLexica id;
 		switch (anticipo.clase()) {
 		case INT:
-			tipo = anticipo;
 			empareja(ClaseLexica.INT);
 			id = anticipo;
 			empareja(ClaseLexica.ID);
-			return sem.dec(sem.str(tipo.lexema(),tipo.fila(),tipo.columna()),
+			return sem.dec("int",
                     sem.str(id.lexema(),id.fila(),id.columna()));
 		case BOOL:
-			tipo = anticipo;
 			empareja(ClaseLexica.BOOL);
 			id = anticipo;
 			empareja(ClaseLexica.ID);
-			return sem.dec(sem.str(tipo.lexema(),tipo.fila(),tipo.columna()),
+			return sem.dec("bool",
                     sem.str(id.lexema(),id.fila(),id.columna()));
 		case REAL:
-			tipo = anticipo;
 			empareja(ClaseLexica.REAL);
 			id = anticipo;
 			empareja(ClaseLexica.ID);
-			return sem.dec(sem.str(tipo.lexema(),tipo.fila(),tipo.columna()),
+			return sem.dec("real",
                     sem.str(id.lexema(),id.fila(),id.columna()));
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.INT,
@@ -102,16 +98,6 @@ public class AnalizadorSintacticoTiny {
 			return null;
 		}
 
-	}
-	// revisar
-	private void Separacion() {
-		switch (anticipo.clase()) {
-		case SEPAR:
-			empareja(ClaseLexica.SEPAR);
-			break;
-		default:
-			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.SEPAR);
-		}
 	}
 	
 	private Insts Instrs() {
@@ -135,7 +121,7 @@ public class AnalizadorSintacticoTiny {
 			UnidadLexica e = anticipo;
 			Exp exp = E0();
 			return sem.instruccion(sem.str(id.lexema(), id.fila(), id.columna()),
-					sem.str(e.lexema(), e.fila(), e.columna()));
+					exp);
 			
 			
 		default:
@@ -151,7 +137,7 @@ public class AnalizadorSintacticoTiny {
 			Inst ins = Instr();
 			return restoIns(sem.instruccion_varias(insh, ins));
 		case EOF:
-			return null;
+			return insh;
 		default:
 			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PTOCOMA,
 					ClaseLexica.EOF);
@@ -164,11 +150,11 @@ public class AnalizadorSintacticoTiny {
 		case RESTA:
 			empareja(ClaseLexica.RESTA);
 			Exp e1 = E1();
-			return sem.resta(exph, e1);
+			return sem.resta(exph, RestoE0(e1));
 		case SUMA:
 			empareja(ClaseLexica.SUMA);
 			Exp e0 = E0();
-			return sem.suma(exph, e0);
+			return sem.suma(exph, RestoE0(e0));
 		case EOF:
 		case PTOCOMA:
 		case PCIE:
@@ -357,11 +343,7 @@ public class AnalizadorSintacticoTiny {
 		case NREAL:
 		case ID:
 			return E5();
-		//Suma debería estar?
-		/*case SUMA:
-			empareja(ClaseLexica.SUMA);
-			E5();
-			*/
+
 		case RESTA:
 			empareja(ClaseLexica.RESTA);
 			return sem.neg(E5());
@@ -416,20 +398,6 @@ public class AnalizadorSintacticoTiny {
 					ClaseLexica.OR);
 			return null;
 
-		}
-	}
-	//Creo que esto no hace nada
-	private void resto() {
-		switch (anticipo.clase()) {
-		case MENEQ:
-			empareja(ClaseLexica.MENEQ);
-			break;
-		case MAYEQ:
-			empareja(ClaseLexica.MAYEQ);
-			break;
-		default:
-			errores.errorSintactico(anticipo.fila(), anticipo.columna(), anticipo.clase(), ClaseLexica.PAP,
-					ClaseLexica.RESTA, ClaseLexica.NOT, ClaseLexica.IGUAL);
 		}
 	}
 

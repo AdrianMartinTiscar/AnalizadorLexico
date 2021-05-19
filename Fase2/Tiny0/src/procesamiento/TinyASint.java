@@ -273,14 +273,14 @@ public class TinyASint {
 	    }
 	    
 	    public static class Dec  {
+	    	private String tipo;
 	        private StringLocalizado id;
-	        private StringLocalizado val;
-	        public Dec(StringLocalizado id, StringLocalizado val) {
+	        public Dec(String tipo, StringLocalizado id) {
 	            this.id = id;
-	            this.val = val;
+	            this.tipo = tipo;
 	        }
 	        public StringLocalizado id() {return id;}
-	        public StringLocalizado val() {return val;}
+	        public String tipo() {return tipo;}
 	        public void procesa(Procesamiento p) {
 	           p.procesa(this); 
 	        }     
@@ -319,13 +319,13 @@ public class TinyASint {
 	    
 	    public static class Inst  {
 	        private StringLocalizado id;
-	        private StringLocalizado val;
-	        public Inst(StringLocalizado id, StringLocalizado val) {
+	        private Exp val;
+	        public Inst(StringLocalizado id, Exp val) {
 	            this.id = id;
 	            this.val = val;
 	        }
 	        public StringLocalizado id() {return id;}
-	        public StringLocalizado val() {return val;}
+	        public Exp val() {return val;}
 	        public void procesa(Procesamiento p) {
 	           p.procesa(this); 
 	        }     
@@ -435,8 +435,8 @@ public class TinyASint {
 	    public Exp cierto(StringLocalizado boo) {
 	        return new Cierto(boo);
 	    }
-	    public Dec dec(StringLocalizado id, StringLocalizado val) {
-	        return new Dec(id,val);
+	    public Dec dec(String tipo, StringLocalizado id) {
+	        return new Dec(tipo, id);
 	    }
 	    public Decs declaracion_una(Dec dec) {
 	        return new Declaracion_una(dec);
@@ -450,7 +450,7 @@ public class TinyASint {
 	    public Insts instruccion_una(Inst ins) {
 	        return new Instruccion_una(ins);
 	    }
-	    public Inst instruccion(StringLocalizado id, StringLocalizado val) {
+	    public Inst instruccion(StringLocalizado id, Exp val) {
 	    	return new Inst(id, val);
 	    }
 	    

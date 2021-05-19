@@ -1,4 +1,4 @@
-real peso;
+real peso
 bool pesado
 &&
 peso = 1 + (1 / 6);
