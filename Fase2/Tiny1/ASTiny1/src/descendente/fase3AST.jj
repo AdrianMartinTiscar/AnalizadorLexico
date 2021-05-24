@@ -1,0 +1,132 @@
+options  {
+  STATIC=false;
+}  
+PARSER_BEGIN(ConstructorAST1)
+package descendente;
+
+import asint.Tiny1ASint.Exp;
+import asint.Tiny1ASint.Dec;
+import asint.Tiny1ASint.Decs;
+import asint.Tiny1ASint.Programa;
+import semops.SemOps;
+
+public class ConstructorAST1 {
+	private SemOps sem = new SemOps();
+}
+
+
+PARSER_END(ConstructorAST1)
+  TOKEN:{<#letra:["a"-"z","A"-"Z"]>}
+  TOKEN:{<#digitoPositivo:["1"-"9"]>}
+  TOKEN:{<#digito:<digitoPositivo>|"0">} 
+  TOKEN:{<#parteEntera:<digitoPositivo> (<digito>)* |"0">} 
+  TOKEN:{<#parteDecimal: ((<digito>)* <digitoPositivo>) | "0">}
+  TOKEN:{<#parteExponencial: (["E","e"])(["+","-"]) <parteEntera>>}
+  SKIP:{<["\t"," ","\r","\b","\n"]>}  
+  SKIP:{<"#"(~["\n"])*>}  
+  TOKEN: {<pint:"int">}
+  TOKEN: {<real:"real">}
+  TOKEN: {<bool:"bool">}
+  TOKEN: {<ptrue:"true">}
+  TOKEN: {<pfalse:"false">}
+  TOKEN: {<string:"string">}
+  TOKEN: {<and:"and">}
+  TOKEN: {<or:"or">}
+  TOKEN: {<not:"not">}
+  TOKEN: {<pnull:"null">}
+  TOKEN: {<proc:"proc">}
+  TOKEN: {<pif:"if">}
+  TOKEN: {<then:"then">}
+  TOKEN: {<pelse:"else">}
+  TOKEN: {<endif:"endif">}
+  TOKEN: {<pwhile:"while">}
+  TOKEN: {<pdo:"do">}
+  TOKEN: {<endwhile:"endwhile">}
+  TOKEN: {<call:"call">}
+  TOKEN: {<record:"record">}
+  TOKEN: {<array:"array">}
+  TOKEN: {<of:"of">}
+  TOKEN: {<pointer:"pointer">}
+  TOKEN: {<pnew:"new">}
+  TOKEN: {<delete:"delete">}
+  TOKEN: {<read:"read">}
+  TOKEN: {<write:"write">}
+  TOKEN: {<nl:"nl">}
+  TOKEN: {<var:"var">}
+  TOKEN: {<type:"type">}
+  TOKEN: {<Separacion:"&&">}
+  TOKEN: {<PtoComa:";">}
+  TOKEN: {<asig:"=">}
+  TOKEN: {<equiv:"==">}
+  TOKEN: {<mas: "+">}
+  TOKEN: {<menos: "-">}
+  TOKEN:{<id:<letra>(<letra>|<digito>|"_")*>}
+  TOKEN:{<Nentero: (["+","-"])? <parteEntera> >}
+  TOKEN:{<Nreal: (["+","-"])? <parteEntera> ("." <parteDecimal>)?(<parteExponencial>)? >  }
+  TOKEN:{<literalCad:"\""(~["\n","\t","\b","\r"])*"\"">}
+
+  Prog ProgramaPrev() : {Programa prog;} {prog=Programa() <EOF> {return prog;}}
+  Prog Programa() : {Decs decs; Instrs instrs;}
+					{decs=Decs() <Separacion> instrs=Instrs() {return sem.programaAux(decs, instrs);} |
+					{instrs=Instrs() {return sem.programaAux(instrs);}}
+  Decs Decs() : {Dec dec; restDec;}
+				{dec=Dec() restDec=restoDec(dec) {return restDec;}}
+  Decs restoDec(Dec dec) : {Decs decs;}
+						   {<PtoComa> decs=declaracion_varias(sem.decs(dec, decs)) {return decs;} |
+						   {return declaracion_una(dec);}}
+  Dec Dec() : {Token d; tipo; Token id; param; Prog bloque;}
+			  {d=<var> {tipo=Tipo() id=<id> {return dec(tipo, id);}} |
+			   d=<type> {tipo=Tipo() id=<id> {return dec(tipo, id);}} |
+			   d=<proc> {id=<id> param=paramForm() bloque=bloque() {return dec(id, param, bloque);}}}
+  Param paramForm() : {Param paramD, Param paramL} 
+					  {"(" paramD=paramFormD() paramL=LparamForm() ")" {return param_formAux(paramD, paramL);}} 
+  Param paramFormD() : {tipo; restparam;}
+					   {tipo=Tipo() restparam=restParamFormD(tipo) {return restparam;} |
+					   {return null;}}
+  Param restParamFormD(Token tipo) : {Token id}
+									 {"&" id=<id> {return param_formAux(tipo, id);} |
+									 {return  param_formAux(tipo, id);}} 
+  Param LparamForm() : {Param paramD, Param paramL}
+					   {"," paramD=paramFormD() paramL=LparamForm() {return param_formAux(paramD, paramL);} |
+					   {return null;}}
+  Prog bloque() : {Prog programa}
+				  {"(" programa=Programa() ")" {return programa;}}
+
+
+  void tipoBas() : {} {<pint> | <bool> | <real> | <string>}
+  void tipo() : {} {tipoBas() | tarray() | trecord() | tpointer() | <id>}
+  void tarray(): {} {<array> "[" <Nentero> "]" <of> tipo()}
+  void trecord() : {} {<record> "{" campo() campos() "}"}
+  void campos() : {} {<PtoComa> campo() campos() | {}}
+  void campo() : {} {tipo() <id>}
+  void tpointer(): {} {<pointer> tipo()}
+  
+  
+  void Instrs(): {} {Instr() restoIns()}
+  void restoIns(): {} {<PtoComa> Instrs() | {}}
+  void Instr(): {} {expr() <asig> expr() | <pif> expr() <then> InstrsOp() restoIf() | <pwhile> expr() <pdo> InstrsOp() <endwhile> | <read> expr() | <write> expr() | <nl> | <pnew> expr() | <delete> expr() | <call> <id> parReales() | bloque()}
+  void InstrsOp(): {} {Instr() restoIns() | {}}
+  void restoIf(): {} {<endif> | <pelse> Instrs() <endif>}
+  void parReales(): {} {"(" ExpresionesOp() ")"}
+  void ExpresionesOp(): {} {expr() LExpresiones() | {}}
+  void LExpresiones(): {} {"," expr() LExpresiones() | {}}
+  void expr(): {} {E0()}
+  void E0(): {} {E1() restoE0()}
+  void restoE0(): {} {<menos> E1() restoE0()| <mas> E0()| {}}
+  void E1(): {} {E2() Rest2E1()}
+  void Rest2E1(): {} {op1AI() E2() Rest2E1() | {}}
+  void E2(): {} {E3() Rest2E2()}
+  void Rest2E2(): {} {op2AI() E3() Rest2E2() | {}}
+  void E3(): {} {E4() restE3()}
+  void restE3(): {} {op3NA() E4() restE3() | {}}
+  void E4(): {} {<menos> E5() | <not> E4() | E5()}
+  void E5(): {} {E6() Resto2E5()}
+  void Resto2E5(): {} {RestoE5() Resto2E5() | {}}
+  void RestoE5(): {} {"[" expr() "]" | "." <id> | "->" <id>}
+  void E6(): {} {"*" E6() | E7()}
+  void E7(): {} { "(" E0() ")" | <Nentero> | <Nreal> | <ptrue> | <pfalse> | <literalCad> | <id> | <pnull>}
+  void op1AI(): {} {<and> | <or>}
+  void op2AI(): {} { ">" resto() | "<" resto()| <equiv> | "!="}
+  void resto(): {} {"=" | {}}
+  void op3NA(): {} {"*" | "/" | "%"}
+

@@ -13,10 +13,14 @@ public class SemOps extends TinyASint{
 	    case "!=": return distinto(arg0, arg1);
 	    case "*": return mul(arg0, arg1);
 	    case "/": return div(arg0, arg1);
+	    case "%": return mod(arg0,arg1);
+	    case "->": return flecha(arg0, arg1);
+	    //case "." return punto(arg0, arg1);
 		}
 		throw new UnsupportedOperationException("exp "+op);
 	}
 	
+
 	public Prog prog(Decs ds, Insts ins) {
 		if (ds == null)
 				return programa_sinDecs(ins);

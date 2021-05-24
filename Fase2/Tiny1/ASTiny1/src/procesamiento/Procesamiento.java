@@ -52,5 +52,13 @@ public interface Procesamiento {
 	void procesa(Campo c);
 	void procesa(TPointer p);
 	
+	void procesa(InstOp_una instOp_una);
+	void procesa(InstOp_varias instOp_varias);
+	void procesa(ParReales_una parReales_una);
+	void procesa(ParReales_varias parReales_varias);
+	void procesa(ParReales_ninguna parReales_ninguna);
+	void procesa(LExpresiones_una lExpresiones_una);
+	void procesa(LExpresiones_varias lExpresiones_varias);
+	
 	
 }

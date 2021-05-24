@@ -21,7 +21,6 @@ public class Main {
 				System.out.println(
 						"El segundo argumento debe ser desc (analisis descendente) o asc (analisis ascendente).");
 		}
-
 	}
 
 }

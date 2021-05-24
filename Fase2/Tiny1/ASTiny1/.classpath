@@ -6,6 +6,10 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/Archivos/CopiaSeguridad/5ºAño(3º+4º)/ProcesadoresDeLenguaje/cup/cup.jar"/>
+	<classpathentry kind="lib" path="D:/Archivos/CopiaSeguridad/5ºAño(3º+4º)/ProcesadoresDeLenguaje/cup/cup.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
