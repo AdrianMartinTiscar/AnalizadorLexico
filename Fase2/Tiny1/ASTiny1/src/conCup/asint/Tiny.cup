@@ -1,6 +1,8 @@
 package conCup.asint;
 
 import java_cup.runtime.*;
+import procesamiento.SemOps;
+import procesamiento.TinyASint.*;
 import alex.AnalizadorLexicoTiny;
 import alex.UnidadLexica;
 import errors.GestionErroresTiny;
