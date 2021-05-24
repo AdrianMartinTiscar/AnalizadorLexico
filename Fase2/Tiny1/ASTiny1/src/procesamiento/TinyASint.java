@@ -230,6 +230,7 @@ public class TinyASint {
 			p.procesa(this);
 		}
 	}
+	
 
 	private static abstract class ExpUn extends Exp {
 		private Exp arg;
@@ -272,6 +273,48 @@ public class TinyASint {
 		private StringLocalizado num;
 
 		public Num(StringLocalizado num) {
+			super();
+			this.num = num;
+		}
+
+		public StringLocalizado num() {
+			return num;
+		}
+
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+
+		public final int prioridad() {
+			return 5;
+		}
+	}
+	
+	public static class NEntero extends Exp {
+		private StringLocalizado num;
+
+		public NEntero(StringLocalizado num) {
+			super();
+			this.num = num;
+		}
+
+		public StringLocalizado num() {
+			return num;
+		}
+
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+
+		public final int prioridad() {
+			return 5;
+		}
+	}
+	
+	public static class NReal extends Exp {
+		private StringLocalizado num;
+
+		public NReal(StringLocalizado num) {
 			super();
 			this.num = num;
 		}
@@ -349,6 +392,27 @@ public class TinyASint {
 
 		public final int prioridad() {
 			return 5;
+		}
+	}
+	
+	public static class Nulo extends Exp {
+		private StringLocalizado nul;
+
+		public Nulo(StringLocalizado nul) {
+			super();
+			this.nul = nul;
+		}
+
+		public StringLocalizado num() {
+			return nul;
+		}
+
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+
+		public final int prioridad() {
+			return 5;//PRIORIDAD 5????? O CUAL?
 		}
 	}
 
@@ -1437,12 +1501,20 @@ public class TinyASint {
 		return new Mod(arg0, arg1);
 	}
 	
-	public Exp flecha(Exp arg0, Exp arg1) {
+	/*public Exp flecha(Exp arg0, Exp arg1) {
 		return new Flecha(arg0, arg1);
-	}
+	}*/
 
 	public Exp num(StringLocalizado num) {
 		return new Num(num);
+	}
+	
+	public Exp nEntero(StringLocalizado num) {
+		return new NEntero(num);
+	}
+	
+	public Exp nReal(StringLocalizado num) {
+		return new NReal(num);
 	}
 
 	public Exp id(StringLocalizado num) {
@@ -1455,6 +1527,10 @@ public class TinyASint {
 
 	public Exp cierto(StringLocalizado boo) {
 		return new Cierto(boo);
+	}
+	
+	public Exp nulo(StringLocalizado nul) {
+		return new Nulo(nul);
 	}
 
 	/*
