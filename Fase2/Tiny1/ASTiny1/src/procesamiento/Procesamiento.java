@@ -9,7 +9,7 @@ public interface Procesamiento {
 	//void procesa (Dec d);
 	void procesa (Instruccion_una ins);
 	void procesa (Instruccion_varias inss);
-	void procesa (Inst ins);
+	//void procesa (Inst ins);
 	void procesa(Suma exp);
 	void procesa(Resta exp);
 	void procesa(Mul exp);
@@ -52,13 +52,35 @@ public interface Procesamiento {
 	void procesa(Campo c);
 	void procesa(TPointer p);
 	
-	void procesa(InstOp_una instOp_una);
-	void procesa(InstOp_varias instOp_varias);
+	void procesa(InstrOp_una instOp_una);
+	void procesa(InstrOp_varias instOp_varias);
 	void procesa(ParReales_una parReales_una);
 	void procesa(ParReales_varias parReales_varias);
 	void procesa(ParReales_ninguna parReales_ninguna);
 	void procesa(LExpresiones_una lExpresiones_una);
 	void procesa(LExpresiones_varias lExpresiones_varias);
 	
+	void procesa(Flecha fl);
+	void procesa(Indir fl);
+	void procesa(Punto fl);
+	void procesa(Indice fl);
+	void procesa(LiteralCad lc);
 	
+	void procesa(Instruccion_asig in);
+	void procesa(Instruccion_if in);
+	void procesa(Instruccion_if_nada in);
+	void procesa(Instruccion_ifelse in);
+	void procesa(Instruccion_ifelse_nada in);
+	void procesa(Instruccion_ifelse_no1 in);
+	void procesa(Instruccion_ifelse_no2 in);
+	void procesa(Instruccion_bloque in);
+
+
+	void procesa(Instruccion_while in);
+	void procesa(Instruccion_read in);
+	void procesa(Instruccion_write in);
+	void procesa(Instruccion_nl in);
+	void procesa(Instruccion_new in);
+	void procesa(Instruccion_delete in);
+	void procesa(Instruccion_call in);
 }
