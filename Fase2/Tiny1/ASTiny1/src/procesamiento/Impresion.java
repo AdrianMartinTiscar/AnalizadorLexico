@@ -40,6 +40,7 @@ public class Impresion extends ProcesamientoPorDefecto {
 
 	public void procesa(Instruccion_varias inss) {
 		inss.ins().procesa(this);
+		//System.out.println(";\n");
 		inss.inss().procesa(this);
 	}
 
@@ -123,6 +124,12 @@ public class Impresion extends ProcesamientoPorDefecto {
 	public void procesa(Div exp) {
 	      imprime_arg(exp.arg0(),4); 
 	      System.out.print(" / ");
+	      imprime_arg(exp.arg1(),4);
+	}
+	
+	public void procesa(Mod exp) {
+		  imprime_arg(exp.arg0(),4); 
+	      System.out.print(" % ");
 	      imprime_arg(exp.arg1(),4);
 	}
 
@@ -297,29 +304,104 @@ public class Impresion extends ProcesamientoPorDefecto {
 	
 	public void procesa(Instruccion_asig in){
 		System.out.print(in.id() + " = ");
-		in.val().procesa(this);
-		
+		in.val().procesa(this);		
 	}
 	//////////////////////
+	
 	public void procesa(Instruccion_if in){
 		System.out.print("if ");
-		
+		in.val().procesa(this);
+		System.out.print(" then ");
+		in.op().procesa(this);
+		System.out.print(" endif");
 	}
-	public void procesa(Instruccion_if_nada in){}
-	public void procesa(Instruccion_ifelse in){}
-	public void procesa(Instruccion_ifelse_nada in){}
-	public void procesa(Instruccion_ifelse_no1 in){}
-	public void procesa(Instruccion_ifelse_no2 in){}
-	public void procesa(Instruccion_bloque in){}
+	
+	public void procesa(Instruccion_if_nada in){//?????????????????????????????????????????
+		System.out.print("if ");
+		in.val().procesa(this);
+		System.out.print(" then ");
+		System.out.print(" endif");		
+	}
+	
+	public void procesa(Instruccion_ifelse in){
+		System.out.print("if ");
+		in.val().procesa(this);
+		System.out.print(" then ");
+		in.op1().procesa(this);
+		System.out.print("else ");
+		in.op2().procesa(this);
+		System.out.print(" endif");
+	}
+	
+	public void procesa(Instruccion_ifelse_nada in){//¿¿¿¿?????
+		System.out.print("if ");
+		in.val().procesa(this);
+		System.out.print(" then ");
+		System.out.print("else ");
+		System.out.print(" endif");
+	}
+	
+	public void procesa(Instruccion_ifelse_no1 in){
+		System.out.print("if ");
+		in.val().procesa(this);
+		System.out.print(" then ");
+		in.op().procesa(this);
+		System.out.print("else ");
+		System.out.print(" endif");
+	}
+	
+	public void procesa(Instruccion_ifelse_no2 in){
+		System.out.print("if ");
+		in.val().procesa(this);
+		System.out.print(" then ");		
+		System.out.print("else ");
+		in.op().procesa(this);
+		System.out.print(" endif");
+	}
+	
+	public void procesa(Instruccion_bloque in){
+		System.out.print("{ ");
+		in.blo().procesa(this);
+		System.out.print(" }");
+	}
 
-
-	public void procesa(Instruccion_while in) {}
-	public void procesa(Instruccion_read in) {}
-	public void procesa(Instruccion_write in) {}
-	public void procesa(Instruccion_nl in) {}
-	public void procesa(Instruccion_new in) {}
-	public void procesa(Instruccion_delete in) {}
-	public void procesa(Instruccion_call in) {}
+	public void procesa(Instruccion_while in) {
+		System.out.print("while ");
+		in.val().procesa(this);
+		System.out.print(" do ");	
+		in.op().procesa(this);	
+		System.out.print("endwhile ");
+	}
+	
+	public void procesa(Instruccion_read in) {
+		System.out.print("read ");
+		in.val().procesa(this);
+	}
+	
+	public void procesa(Instruccion_write in) {
+		System.out.print("write ");
+		in.val().procesa(this);
+	}
+	
+	public void procesa(Instruccion_nl in) {
+		System.out.print("nl");
+	}
+	
+	public void procesa(Instruccion_new in) {
+		System.out.print("new ");
+		in.val().procesa(this);
+	}
+	
+	public void procesa(Instruccion_delete in) {
+		System.out.print("delete ");
+		in.val().procesa(this);
+	}
+	
+	public void procesa(Instruccion_call in) {
+		System.out.print("call ");
+		System.out.print(in.str());
+		in.parReales().procesa(this);
+	}
 	
 
 	private void imprime_arg(Exp arg, int p) {
