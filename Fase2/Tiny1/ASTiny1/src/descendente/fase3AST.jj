@@ -117,10 +117,9 @@ PARSER_END(ConstructorAST1)
   Instrs restoIns(Instr instr) : {Instrs instrs}
 								 {<PtoComa> instrs=instruccion_varias(instr, instrs) {return instrs;} |
 								 {return instruccion_una(instr);}}
-  Instr Instr() : {Exp ex1; Exp ex2; InstrsOp op1; InstrsOp op2, Token id, ParReales par, Prog blo}
+  Instr Instr() : {Exp ex1; Exp ex2; InstrsOp op1; InstrsOp op2; Token id; ParReales par; Prog blo; Token res;}
 				  {ex1=expr() "=" ex2=expr() {return instuccion_asig(ex1, ex2);} |
-				   <if> ex1=expr() <then> op1=InstrsOp() <endif> {return instruccion_ifAux(ex1, op1);} |
-				   <if> ex1=expr() <then> op1=InstrsOp() <else> op2=InstrsOp() <endif> {return instruccion_ifelseAux(ex1, op1, op2);} |
+				   <if> ex1=expr() <then> op1=InstrsOp() res=restoIf(ex1, op1) {return res;} |
 				   <while> ex1=expr() <do> op1=InstrsOp() <endwhile> {return instr_while(ex1, op1);} |
 				   <read> ex1=expr() {return instruccion_read(ex1);} |
 				   <write> ex1=expr() {return instruccion_write(ex1);} |
@@ -132,11 +131,9 @@ PARSER_END(ConstructorAST1)
   InstrsOp InstrsOp() : {Instr inst; Instrs instrs}
 						{inst=Instr() instrs=Instrs() {return instrOpAux(inst, instrs);} |
 						{return null;}}
-
-  void Instr(): {} {expr() <asig> expr() | <pif> expr() <then> InstrsOp() restoIf() | <pwhile> expr() <pdo> InstrsOp() <endwhile> | <read> expr() | <write> expr() | <nl> | <pnew> expr() | <delete> expr() | <call> <id> parReales() | bloque()}
-  void InstrsOp(): {} {Instr() restoIns() | {}}
-  void restoIf(): {} {<endif> | <pelse> Instrs() <endif>}
-  
+  Instr restoIf(Exp e; InstrsOp op1) : {InstrsOp op2;}
+									   {<endif> {return instruccion_ifAux(e, op1);} |
+									    <else> op2=InstrsOp() <endif> {return instruccion_ifelseAux(e, op1, op2);}} 
   ParReales parReales() : {ParReales p;}
 						  {"(" p=restoPaRe() {return p;}}
   ParReales restoPaRe() : {Exp ex; LExpresiones lexp;}
