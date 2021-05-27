@@ -170,17 +170,14 @@ PARSER_END(ConstructorAST1)
 			  <not> e=E4() {return not(e);} |
 			  e=E5() {return e;}}
   Exp E5() : {Exp e6, Exp res;}
-			 {e6=E6() res=Resto2E5(e6) {return res;}}
-			 
-			 
-  Exp Resto2E5(Exp e6) : {Exp res; Exp res2;}
-						 {res=RestoE5() 
-  
-  
-  void E5(): {} {E6() Resto2E5()}
-  void Resto2E5(): {} {RestoE5() Resto2E5() | {}}
-  void RestoE5(): {} {"[" expr() "]" | "." <id> | "->" <id>}
-  
+			 {e6=E6() res=Resto2E5(e6) {return res;}}			 
+  Exp Resto2E5(Exp e6) : {Exp res; Exp res2; Exp rese5}
+						 {res=RestoE5(e6) res2=Resto2E5(res) {return res2;} |
+						 {return e6;}}
+  Exp RestoE5(Exp res) : {Exp e; Token id;}
+						 {"[" e=expr() "]" {return indice(res, e);} |
+						  "." id=<id> {return punto(res, id);} |
+						  "->" id=<id> {return flecha(res, id);}}  
   Exp E6() : {Exp ev;}
 			 {"*" ev=E6() {return indireccion(ev);} |
 			  ev=E7() {return ev;}}
