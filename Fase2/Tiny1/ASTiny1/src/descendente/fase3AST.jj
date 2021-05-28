@@ -91,42 +91,115 @@ PARSER_END(ConstructorAST1)
 					   {return null;}}
   Prog bloque() : {Prog programa}
 				  {"(" programa=Programa() ")" {return programa;}}
-
-
-  void tipoBas() : {} {<pint> | <bool> | <real> | <string>}
-  void tipo() : {} {tipoBas() | tarray() | trecord() | tpointer() | <id>}
-  void tarray(): {} {<array> "[" <Nentero> "]" <of> tipo()}
-  void trecord() : {} {<record> "{" campo() campos() "}"}
-  void campos() : {} {<PtoComa> campo() campos() | {}}
-  void campo() : {} {tipo() <id>}
-  void tpointer(): {} {<pointer> tipo()}
-  
-  
-  void Instrs(): {} {Instr() restoIns()}
-  void restoIns(): {} {<PtoComa> Instrs() | {}}
-  void Instr(): {} {expr() <asig> expr() | <pif> expr() <then> InstrsOp() restoIf() | <pwhile> expr() <pdo> InstrsOp() <endwhile> | <read> expr() | <write> expr() | <nl> | <pnew> expr() | <delete> expr() | <call> <id> parReales() | bloque()}
-  void InstrsOp(): {} {Instr() restoIns() | {}}
-  void restoIf(): {} {<endif> | <pelse> Instrs() <endif>}
-  void parReales(): {} {"(" ExpresionesOp() ")"}
-  void ExpresionesOp(): {} {expr() LExpresiones() | {}}
-  void LExpresiones(): {} {"," expr() LExpresiones() | {}}
-  void expr(): {} {E0()}
-  void E0(): {} {E1() restoE0()}
-  void restoE0(): {} {<menos> E1() restoE0()| <mas> E0()| {}}
-  void E1(): {} {E2() Rest2E1()}
-  void Rest2E1(): {} {op1AI() E2() Rest2E1() | {}}
-  void E2(): {} {E3() Rest2E2()}
-  void Rest2E2(): {} {op2AI() E3() Rest2E2() | {}}
-  void E3(): {} {E4() restE3()}
-  void restE3(): {} {op3NA() E4() restE3() | {}}
-  void E4(): {} {<menos> E5() | <not> E4() | E5()}
-  void E5(): {} {E6() Resto2E5()}
-  void Resto2E5(): {} {RestoE5() Resto2E5() | {}}
-  void RestoE5(): {} {"[" expr() "]" | "." <id> | "->" <id>}
-  void E6(): {} {"*" E6() | E7()}
-  void E7(): {} { "(" E0() ")" | <Nentero> | <Nreal> | <ptrue> | <pfalse> | <literalCad> | <id> | <pnull>}
-  void op1AI(): {} {<and> | <or>}
-  void op2AI(): {} { ">" resto() | "<" resto()| <equiv> | "!="}
-  void resto(): {} {"=" | {}}
-  void op3NA(): {} {"*" | "/" | "%"}
-
+  Tipo tipoBas() : {<pint> {return int();} |
+				   <bool> {return bool();} |
+				   <real> {return real();} |
+				   <string> {return string();}}
+  Tipo tipo() : {Token t}
+				{t=tipoBas() {return t;} |
+				 t=tarray() {return t;} |
+				 t=trecord() {return t;} |
+				 t=tpointer() {return t;} |
+				 t=<id> {return t;}}
+  Tipo tarray() : {Token array, Nentero num, Token tipo}
+				  {array=<id> "[" num=<Nentero> "]" <of> tipo=tipo() {return tarray(num, tipo);}}
+  Tipo trecord() : {Campo campo, Campos campos}
+				   {<record> "(" campo=campo() campos=campos() ")" {return tRecordAux(campo, campos);}}
+  Tipo campos() : {Campo campo, Campos campos}
+				  {<PtoComa> campo=campo() campos=campos() {return camposAux(campo, campos);} |
+				  {return null;}}
+  Tipo campo() : {Token t, Token id}
+				 {t=tipo() id=<id> {return campo(t, id);}}
+  Tipo tpointer() : {Token t}
+					{<pointer> t=tipo() {return tpointer(t);}} 
+  Instrs instrs() : {Instr instr; restoins;}
+                    {instr=instr() restoins=restoIns(instr) {return restoins;}}
+  Instrs restoIns(Instr instr) : {Instrs instrs}
+								 {<PtoComa> instrs=instruccion_varias(instr, instrs) {return instrs;} |
+								 {return instruccion_una(instr);}}
+  Instr Instr() : {Exp ex1; Exp ex2; InstrsOp op1; InstrsOp op2; Token id; ParReales par; Prog blo; Token res;}
+				  {ex1=expr() "=" ex2=expr() {return instuccion_asig(ex1, ex2);} |
+				   <if> ex1=expr() <then> op1=InstrsOp() res=restoIf(ex1, op1) {return res;} |
+				   <while> ex1=expr() <do> op1=InstrsOp() <endwhile> {return instr_while(ex1, op1);} |
+				   <read> ex1=expr() {return instruccion_read(ex1);} |
+				   <write> ex1=expr() {return instruccion_write(ex1);} |
+				   <nl> {return instruccion_nl();} |
+				   <new> ex1=expr() {return instruccion_new(ex1);} |
+				   <delete> ex1=expr() {return instruccion_delete(ex1);} |
+				   <call> id=<id> par=parReales() {return instruccion_call(id, par);} |
+				   blo=bloque() {return instruccion_bloque(blo);}}
+  InstrsOp InstrsOp() : {Instr inst; Instrs instrs}
+						{inst=Instr() instrs=Instrs() {return instrOpAux(inst, instrs);} |
+						{return null;}}
+  Instr restoIf(Exp e; InstrsOp op1) : {InstrsOp op2;}
+									   {<endif> {return instruccion_ifAux(e, op1);} |
+									    <else> op2=InstrsOp() <endif> {return instruccion_ifelseAux(e, op1, op2);}} 
+  ParReales parReales() : {ParReales p;}
+						  {"(" p=restoPaRe() {return p;}}
+  ParReales restoPaRe() : {Exp ex; LExpresiones lexp;}
+						  {ex=expr() lexp=lExpresiones() ")" {return parRealesAux(ex, lexp);} |
+						  ")" {return parRealesAux(null, null);}}
+  LExpresiones lExpresiones() : {Exp ex; LExpresiones lexp;}
+								{"," ex=expr() lexp=lExpresiones() {return lExpresionesAux(ex, lexp);} |
+								{return null;}}
+  Exp expr() : {Exp ex;}
+			   {ex=E0() {return ex;}}
+  Exp E0() : {Exp e1; Exp res;}
+			 {e1=E1() res=restoE0(e1) {return res;}}
+  Exp restoE0(Exp e1) : {Exp ev; Exp e}
+						{<menos> ev=E1() e=resta(e1, ev) {return e;} |
+						 <mas> ev=E0() e=suma(e1, ev) {return e;} |
+						{return e1;}}
+  Exp E1() : {Exp e2; Exp res;}
+			 {e2=E2() res=rest2E1(e2) {return res;}}
+  Exp rest2E1(Exp e2) : {Token op; Exp ev; Exp res;}
+					{op=op1AI() ev=E2() res=rest2E1(ev) {return exp(op, e2, res);} |
+					{return e2;}}
+  Exp E2() : {Exp e3; Exp res;}
+			 {e3=E3() res=rest2E2(e3) {return res;}}
+  Exp rest2E2(Exp e3) : {Token op; Exp ev; Exp res;}
+					{op=op2AI() ev=E3() res=rest2E2(ev) {return exp(op, e3, res);} |
+					{return e3;}}
+  Exp E3() : {Exp e4; Exp res;}
+			 {e4=E4() res=restE3(e4) {return res;}}
+  Exp restE3(Exp e4) : {Token op; Exp ev; Exp res;}
+					{op=op3NA() ev=E4() res=restE3(ev) {return exp(op, e4, res);} |
+					{return e4;}}
+  Exp E4() : {Exp e;}
+			 {<menos> e=E5() {return neg(e);} |
+			  <not> e=E4() {return not(e);} |
+			  e=E5() {return e;}}
+  Exp E5() : {Exp e6, Exp res;}
+			 {e6=E6() res=Resto2E5(e6) {return res;}}			 
+  Exp Resto2E5(Exp e6) : {Exp res; Exp res2; Exp rese5}
+						 {res=RestoE5(e6) res2=Resto2E5(res) {return res2;} |
+						 {return e6;}}
+  Exp RestoE5(Exp res) : {Exp e; Token id;}
+						 {"[" e=expr() "]" {return indice(res, e);} |
+						  "." id=<id> {return punto(res, id);} |
+						  "->" id=<id> {return flecha(res, id);}}  
+  Exp E6() : {Exp ev;}
+			 {"*" ev=E6() {return indireccion(ev);} |
+			  ev=E7() {return ev;}}
+  Exp E7() : {Exp e;}
+			 {"(" e=E0() ")" {return e;} |
+			  e=<Nentero> {return e;} |
+			  e=<Nreal> {return e;} |
+			  e=<ptrue> {return e;} |
+			  e=<pfalse> {return e;} |
+			  e=<null> {return e;} |
+			  e=<literalCad> {return e;} |
+			  e=<id> {return e;}}
+  string op1AI() : {}
+				   {<and> {return "and";} |
+				    <or> {return "or";}}
+  string op2AI() : {Token res;}
+				   {">" res=resto('>') {return res;}
+				    "<" res=resto('<') {return res;}}
+  string resto(char m) : {}
+						 {"=" {return (m+=);} |
+						 {return m;}}
+  char op3NA() : {}
+				 {"*" {return '*';} |
+				  "/" {return '/';} |
+				  "%" {return '%';}}
