@@ -86,4 +86,5 @@ public interface Procesamiento {
 	void procesa(Instruccion_call in);
 	
 	void procesa(Dec_type d);
+	void procesa(ParamDAmp p);
 }

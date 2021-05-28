@@ -85,4 +85,5 @@ public class ProcesamientoPorDefecto implements Procesamiento{
 	public void procesa(Instruccion_delete in) {}
 	public void procesa(Instruccion_call in) {}
 	public void procesa(Dec_type d) {}
+	public void procesa(ParamDAmp p) {}
 }

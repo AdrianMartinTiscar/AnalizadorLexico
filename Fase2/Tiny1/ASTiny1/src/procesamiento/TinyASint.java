@@ -662,6 +662,13 @@ public class TinyASint {
 			p.procesa(this);
 		}
 	}
+	public static class ParamDAmp extends ParamD{
+		public ParamDAmp(Tipo t, StringLocalizado i) {
+			super(t, i);
+		}
+		public void procesa(Procesamiento p) {
+			p.procesa(this);		}
+	}
 
 	public static abstract class LParamForm {
 		public LParamForm() {
@@ -1864,5 +1871,8 @@ public class TinyASint {
 	public Dec dec_type(Tipo a, Tipo b) {
 		return new Dec_type(a, b);
 		
+	}
+	public ParamD paramDAmp(Tipo t, StringLocalizado i) {
+		return new ParamDAmp(t, i);
 	}
 }

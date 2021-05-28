@@ -187,6 +187,10 @@ public class Impresion extends ProcesamientoPorDefecto {
 		p.tipo().procesa(this);
 		System.out.print(p.id());
 	}
+	public void procesa(ParamDAmp p) {
+		p.tipo().procesa(this);
+		System.out.print( "&" + p.id());
+	}
 	public void procesa(LParamForm_varias p){
 		System.out.print(", ");
 		p.par().procesa(this);
