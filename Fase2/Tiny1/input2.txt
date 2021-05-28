@@ -1,15 +1,7 @@
 var real peso;
 var bool pesado;
-type record {
- int cont;
- array [20] of int lista
-} tReco;
-type record {
- int x;
- int y
-} tPar;
 var int x;
-type pointer tNodo tArbol;
+
 proc incrementa(int & v, int delta) {
  var int x;
  var int y

@@ -24,7 +24,8 @@ public class ProcesamientoPorDefecto implements Procesamiento{
 	public void procesa(Not not){}
 	public void procesa(Div exp){}
 	public void procesa(Id exp){}
-	public void procesa(Num exp){}
+	public void procesa(NEntero exp){}
+	public void procesa(NReal exp){}
 	public void procesa(Neg neg){}
 	public void procesa(Cierto t){}
 	public void procesa(Falso f){}
@@ -83,4 +84,5 @@ public class ProcesamientoPorDefecto implements Procesamiento{
 	public void procesa(Instruccion_new in) {}
 	public void procesa(Instruccion_delete in) {}
 	public void procesa(Instruccion_call in) {}
+	public void procesa(Dec_type d) {}
 }

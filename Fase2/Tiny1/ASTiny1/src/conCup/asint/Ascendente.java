@@ -9,7 +9,7 @@ import conCup.alex.AnalizadorLexicoTiny;
 
 import conCup.alex.UnidadLexica;
 
-public class Ascendente {
+/*public class Ascendente {
 	private String fich;
 
 	public Ascendente(String fich){
@@ -40,3 +40,4 @@ public class Ascendente {
 		}
 	}
 }
+*/

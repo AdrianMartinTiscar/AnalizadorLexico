@@ -14,7 +14,13 @@ public class SemOps extends TinyASint{
 	    case "*": return mul(arg0, arg1);
 	    case "/": return div(arg0, arg1);
 	    case "%": return mod(arg0,arg1);
-	    case "->": return flecha(arg0, arg1);
+		}
+		throw new UnsupportedOperationException("exp "+op);
+	}
+	
+	public Exp exp (String op, Exp arg0, StringLocalizado arg1) {
+		switch(op) {
+		case "->": return flecha(arg0, arg1);
 	    case ".": return punto(arg0, arg1);
 		}
 		throw new UnsupportedOperationException("exp "+op);
@@ -82,7 +88,7 @@ public class SemOps extends TinyASint{
 	    if (is==null)
 	        return instrOp_una(i);
 	    else
-	        return instrOp_varias(i,is);
+	        return instrOp_varias(is);
 	}
 
 	public ParReales parRealesAux(Exp e, LExpresiones es){
@@ -101,5 +107,4 @@ public class SemOps extends TinyASint{
 	    else
 	        return lExpresiones_varias(e, es);
 	}
-
 }

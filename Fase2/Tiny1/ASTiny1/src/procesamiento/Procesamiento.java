@@ -24,7 +24,8 @@ public interface Procesamiento {
 	void procesa(Not not);
 	void procesa(Div exp);
 	void procesa(Id exp);
-	void procesa(Num exp);
+	void procesa(NEntero exp);
+	void procesa(NReal exp);
 	void procesa(Neg neg);
 	void procesa(Cierto t);
 	void procesa(Falso f);
@@ -83,4 +84,6 @@ public interface Procesamiento {
 	void procesa(Instruccion_new in);
 	void procesa(Instruccion_delete in);
 	void procesa(Instruccion_call in);
+	
+	void procesa(Dec_type d);
 }

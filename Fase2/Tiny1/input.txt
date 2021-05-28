@@ -7,9 +7,10 @@ type record {
 type record {
  int x;
  int y
-} tPar;
+} tNodo;
 var int x;
-type pointer tNodo tArbol;
+type int tNodo;
+type pointer int tArbol;
 proc incrementa(int & v, int delta) {
  var int x;
  var int y

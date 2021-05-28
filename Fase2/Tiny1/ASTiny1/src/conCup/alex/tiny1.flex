@@ -1,6 +1,6 @@
 package conCup.alex;
 
-import conCup.errors.GestionErroresTiny;
+import conCup.errors.GestionErroresCUP;
 
 %%
 %cup
@@ -12,11 +12,11 @@ import conCup.errors.GestionErroresTiny;
 
 %{
   private ATinyOperations ops;
-  private GestionErroresTiny errores;
+  private GestionErroresCUP errores;
   public String lexema() {return yytext();}
   public int fila() {return yyline+1;}
   public int columna() {return yycolumn+1;}
-  public void fijaGestionErrores(GestionErroresTiny errores){
+  public void fijaGestionErrores(GestionErroresCUP errores){
     this.errores = errores;
   }
 %}

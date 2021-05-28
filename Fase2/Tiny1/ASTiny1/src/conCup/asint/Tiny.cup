@@ -1,21 +1,40 @@
 package conCup.asint;
 
 import java_cup.runtime.*;
+import conCup.alex.AnalizadorLexicoTiny;
 import procesamiento.SemOps;
-import procesamiento.TinyASint.*;
-import alex.AnalizadorLexicoTiny;
-import alex.UnidadLexica;
-import errors.GestionErroresTiny;
+import procesamiento.TinyASint.Bloque;
+import procesamiento.TinyASint.Campo;
+import procesamiento.TinyASint.Campos;
+import procesamiento.TinyASint.Dec;
+import procesamiento.TinyASint.Inst;
+import procesamiento.TinyASint.InstrOp;
+import procesamiento.TinyASint.Insts;
+import procesamiento.TinyASint.LExpresiones;
+import procesamiento.TinyASint.LParamForm;
+import procesamiento.TinyASint.ParamD;
+import procesamiento.TinyASint.ParamForm;
+import procesamiento.TinyASint.Prog;
+import procesamiento.TinyASint.StringLocalizado;
+import procesamiento.TinyASint.Tipo;
+import procesamiento.TinyASint.Decs;
+import procesamiento.TinyASint.Exp;
+import conCup.errors.GestionErroresCUP;
+import conCup.alex.UnidadLexica;
+import procesamiento.TinyASint.ParReales;
 
 scan with {: return getScanner().next_token(); :};
+action code {:
+   private SemOps sem = new SemOps();
+:};
 parser code {: 
-   private GestionErroresTiny errores;
+   private GestionErroresCUP errores;
    public void syntax_error(Symbol unidadLexica) {
      errores.errorSintactico((UnidadLexica)unidadLexica);
    }
 :};
 init with {: 
-   errores = new GestionErroresTiny();
+   errores = new GestionErroresCUP();
    AnalizadorLexicoTiny alex = (AnalizadorLexicoTiny)getScanner();
    alex.fijaGestionErrores(errores);
 :};
@@ -23,76 +42,206 @@ init with {:
 
 terminal     INT, REAL, BOOL, STRING, AND, OR, NOT, NULL, TRUE, FALSE, PROC, IF, THEN, ELSE,
              ENDIF, WHILE, DO, ENDWHILE, CALL, RECORD, PARRAY, OF, POINTER, NEW, DELETE, READ, WRITE,
-             NL, VAR, TYPE, ID, NENTERO, NREAL, LITCAD, SEPARACION, SUMA, RESTA, MUL, DIV, MEN, MAY,
+             NL, VAR, TYPE, SEPARACION, SUMA, RESTA, MUL, DIV, MEN, MAY,
              MENEQ, MAYEQ, EQUIV, DIST, PAP, PCIE, PTOCOMA, IGUAL, COMA, PORC, CORAP, CORCIE, LLAP,
-             LLCIE, PNTO, FLECHA, AMP, IGN, COM;
+             LLCIE, PNTO, FLECHA, AMP;
+terminal     StringLocalizado ID, LITCAD, NENTERO, NREAL;
 
 
-non terminal  Programa, Decs, restoDec, Dec, paramForm, paramFormD, restParamFormD, LparamForm, bloque,
-              tipoBas, tipo, tarray, trecord, campos, campo, tpointer, Instrs, restoIns, Instr, InstrOp,
-              restoIf, parReales, ExpresionesOp, LExpresiones, expr, E0, restoE0, E1, Rest2E1,
-              E2, Rest2E2, E3, restE3, E4, E5, Resto2E5, RestoE5, E6, E7, op1AI, op2AI, resto, op3NA;
-
-Programa ::= Decs SEPARACION Instrs | Instrs ;
-
-Decs ::= Dec restoDec ;
-restoDec ::= PTOCOMA Decs | ;
-
-Dec ::= VAR tipo ID | TYPE tipo ID | PROC ID paramForm bloque ;
-paramForm ::= PAP paramFormD LparamForm PCIE ;
-paramFormD ::= tipo restParamFormD ;
-restParamFormD ::= AMP ID | ID ;
-
-LparamForm ::= COMA paramFormD LparamForm | ;
-bloque ::= LLAP Programa LLCIE ;
-
-tipoBas ::= INT | BOOL | REAL | STRING ;
-tipo  ::= tipoBas | tarray | trecord | tpointer | ID ;
-tarray ::= PARRAY CORAP NENTERO CORCIE OF tipo ;
-trecord ::= RECORD LLAP campo campos LLCIE ;
-campos ::= PTOCOMA campo campos | ;
-campo ::= tipo ID ;
-tpointer ::= POINTER tipo ;
-
-Instrs ::= Instr restoIns ;
-restoIns ::= PTOCOMA Instrs | ;
-
-Instr ::= ID IGUAL expr | IF expr THEN InstrOp restoIf | WHILE expr DO InstrOp ENDWHILE | READ expr | WRITE expr | NL | NEW expr |
-        DELETE expr | CALL ID parReales | bloque ;
-InstrOp ::= Instr restoIns | ;
-restoIf ::= ENDIF | ELSE Instrs ENDIF ;
-parReales ::= PAP ExpresionesOp PCIE ;
-ExpresionesOp ::= expr LExpresiones | ;
-LExpresiones ::= COMA expr LExpresiones | ;
-
-expr ::= E0 ;
-
-E0 ::= E1 restoE0 ;
-restoE0 ::= RESTA E1 restoE0 | SUMA E0 | ;
-
-E1 ::= E2 Rest2E1 ;
-Rest2E1 ::= op1AI E2 Rest2E1 | ;
-
-E2 ::= E3 Rest2E2 ;
-Rest2E2 ::= op2AI E3 Rest2E2 | ;
-
-E3 ::= E4 restE3 ;
-restE3 ::= op3NA E4 restE3 | ;
-
-E4 ::= RESTA E5 | NOT E4 | E5 ;
-
-E5 ::= E6 Resto2E5 ;
-Resto2E5 ::= RestoE5 Resto2E5 | ;
-RestoE5 ::= CORAP expr CORCIE | PNTO ID | FLECHA ID ;
-
-E6 ::= MUL E6 | E7 ;
-E7 ::= PAP E0 PCIE | NENTERO | NREAL | ID | NULL | LITCAD | TRUE | FALSE ;
-
-op1AI ::= AND | OR ;
-
-op2AI ::= MAY | MEN | EQUIV | DIST | MENEQ | MAYEQ;
-
-op3NA ::= MUL | DIV | PORC;
+non terminal  Prog Programa;
+non terminal  Decs Decs;
+non terminal  Dec Dec;
+non terminal  ParamForm paramForm;
+non terminal  ParamD paramFormD;
+non terminal  LParamForm LparamForm;
+non terminal  Bloque bloque;
+non terminal  Tipo tipo, tarray, trecord, tpointer;
+non terminal  Campos campos;
+non terminal  Campo campo;
+non terminal  Insts Instrs;
+non terminal  Inst Instr;
+non terminal  InstrOp instrOpt;
+non terminal  ParReales parReales;
+non terminal  LExpresiones LExpresiones;
+non terminal  Exp expr, E0, E1, E2, E3, E4, E5, E6, E7;
+non terminal  String op1AI, op2AI, op3NA;
 
 
+Programa ::= Decs: ds SEPARACION Instrs: is
+    {:RESULT = sem.programa_conDecs(ds, is);:};
+Programa ::= Instrs:is
+    {:RESULT = sem.programa_sinDecs(is);:};
+Decs ::= Dec: d PTOCOMA Decs: ds
+    {:RESULT = sem.declaracion_varias(d, ds);:};
+Decs ::= Dec: d
+    {:RESULT = sem.declaracion_una(d);:};
+Dec ::= VAR tipo: t ID: i
+    {:RESULT = sem.dec_habitual(t, i);:};
+Dec ::= TYPE tipo:t ID:i
+    {:RESULT = sem.dec_type(t, sem.tipoin(i));:};
+Dec ::= PROC ID:i paramForm:p bloque:b
+    {:RESULT = sem.dec_proc(i, p, b);:};
+paramForm ::= PAP paramFormD:p LparamForm:l PCIE
+    {:RESULT = sem.param_formAux(p, l);:};
+paramFormD ::= tipo:t AMP ID:i
+    {:RESULT = sem.paramD(t, i);:};
+paramFormD ::= tipo:t ID:i
+    {:RESULT = sem.paramD(t, i);:};
+paramFormD ::= 
+    {:RESULT = null;:};
+LparamForm ::= COMA paramFormD:p LparamForm:l
+    {:RESULT = sem.lparamFormAux(p, l);:};
+LparamForm ::= 
+    {:RESULT = null;:};
+bloque ::= LLAP Programa:p LLCIE
+    {:RESULT = sem.bloque(p);:};
 
+tipo ::= INT
+    {:RESULT = sem.intt();:};
+tipo ::= BOOL
+    {:RESULT = sem.boolt();:};
+tipo ::= REAL
+    {:RESULT = sem.realt();:};
+tipo ::= STRING
+    {:RESULT = sem.stringt();:};
+
+tipo ::= PARRAY CORAP NENTERO:n CORCIE OF tipo: t
+    {:RESULT =sem.tArray(n, t);:};
+tipo ::= RECORD LLAP campo: c campos: cs LLCIE
+    {:RESULT = sem.trecordAux(c, cs);:};
+campos ::= PTOCOMA campo: c campos: cs
+    {:RESULT = sem.campos(c, cs);:};
+campos ::= 
+    {:RESULT = null;:};
+campo ::= tipo:t ID:i
+    {:RESULT = sem.campo(t, i);:};
+tipo ::= POINTER tipo:t
+    {:RESULT = sem.tPointer(t);:};
+
+Instrs ::= Instr:i PTOCOMA Instrs:is
+    {:RESULT = sem.instruccion_varias(i, is);:};
+Instrs ::= Instr: i
+    {:RESULT = sem.instruccion_una(i);:};
+Instr ::= expr:e0 IGUAL expr:e2
+    {:RESULT = sem.instruccion_asig(e0, e2);:};
+Instr ::= IF expr:e THEN instrOpt:i ENDIF
+    {:RESULT = sem.instruccion_ifAux(e,i);:};
+Instr ::= IF expr:e THEN instrOpt:i1 ELSE instrOpt:i2 ENDIF
+    {:RESULT = sem.instruccion_ifelseAux(e, i1, i2);:};
+instrOpt ::= Instrs:is
+    {:RESULT = sem.instrOp_varias(is);:};
+instrOpt ::= 
+    {:RESULT = null;:};
+Instr ::= WHILE expr:e DO instrOpt:i ENDWHILE
+    {:RESULT = sem.instruccion_while(e, i);:};
+Instr ::= READ expr: e
+    {:RESULT = sem.instruccion_read(e);:};
+Instr ::= WRITE expr:e
+    {:RESULT = sem.instruccion_write(e);:};
+Instr ::= NL
+    {:RESULT = sem.instruccion_nl();:};
+Instr ::= NEW expr:e
+    {:RESULT = sem.instruccion_new(e);:};
+Instr ::= DELETE expr:e
+    {:RESULT = sem.instruccion_delete(e);:};
+Instr ::= CALL ID:i parReales: pr
+    {:RESULT = sem.instruccion_call(i, pr);:};
+parReales ::= PAP expr:e LExpresiones:le PCIE
+    {:RESULT = sem.parRealesAux(e, le);:};
+parReales ::= PAP PCIE
+    {:RESULT = sem.parReales_ninguna();:};
+
+LExpresiones ::= COMA expr:e LExpresiones:le
+    {:RESULT = sem.lExpresionesAux(e, le);:};
+LExpresiones ::= 
+    {:RESULT = null;:};
+Instr ::= bloque: b
+    {:RESULT = sem.instruccion_bloque(b);:};
+
+expr ::= E0: e
+    {:RESULT = e;:};
+
+E0 ::= E1: a0 SUMA E0:a1
+    {:RESULT = sem.suma(a0, a1);:};
+E0 ::= E1:e RESTA E1:e1
+    {:RESULT = sem.resta(e, e1);:};
+E0 ::= E1:a
+    {:RESULT = a;:};    
+
+E1 ::= E1:a0 op1AI:op E2:a1
+    {:RESULT = sem.exp(op, a0, a1);:};
+E1 ::= E2:a
+    {:RESULT = a;:};
+    
+E2 ::= E2:a0 op2AI:op E3: a1
+    {:RESULT = sem.exp(op, a0, a1);:};
+E2 ::= E3:a
+    {:RESULT = a;:};
+
+E3 ::= E4:a0 op3NA:op E4:a1
+    {:RESULT = sem.exp(op, a0, a1);:};  
+E3 ::= E4:a
+    {:RESULT = a;:};
+
+
+E4 ::= RESTA E5:a
+    {:RESULT = sem.neg(a);:};
+E4 ::= NOT E4: a
+    {:RESULT = sem.not(a);:};
+E4 ::= E5:a
+    {:RESULT = a;:};
+
+E5 ::= E5:a0 CORAP expr:a1 CORCIE
+    {:RESULT = sem.indice(a0, a1);:};
+E5 ::= E5:e PNTO ID:i
+    {:RESULT = sem.punto(e, i);:};
+E5 ::= E5:a FLECHA ID: i
+    {:RESULT = sem.flecha(a, i);:};
+E5 ::= E6:a
+    {:RESULT = a;:};
+
+E6 ::= MUL E6:a
+    {:RESULT = sem.indir(a);:};
+E6 ::= E7:a
+    {:RESULT = a;:};
+
+E7 ::= NENTERO:n
+    {:RESULT = sem.nEntero(n);:};
+E7 ::= NREAL: n
+    {:RESULT = sem.nReal(n);:};
+E7 ::= ID: i
+    {:RESULT = sem.id(i);:};
+E7 ::= NULL
+    {:RESULT = sem.nulo();:};
+E7 ::= LITCAD:l
+    {:RESULT = sem.literalCad(l);:};
+E7 ::= TRUE
+    {:RESULT = sem.cierto();:};
+E7 ::= FALSE
+    {:RESULT = sem.falso();:};
+E7 ::= PAP E0:a PCIE
+    {:RESULT = a;:};
+
+op1AI ::= AND
+    {:RESULT = "and";:};
+op1AI ::= OR
+    {:RESULT = "or";:};
+op2AI ::= MAY
+    {:RESULT = ">";:};
+op2AI ::= MEN
+    {:RESULT = "<";:};
+op2AI ::= MAYEQ
+    {:RESULT = ">=";:};
+op2AI ::= MENEQ
+    {:RESULT = "<=";:};
+op2AI ::= EQUIV
+    {:RESULT = "==";:};
+op2AI ::= DIST
+    {:RESULT = "!=";:};
+
+op3NA ::= MUL
+    {:RESULT = "*";:};
+op3NA ::= DIV
+    {:RESULT = "/";:};
+op3NA ::= PORC
+    {:RESULT = "%";:};
