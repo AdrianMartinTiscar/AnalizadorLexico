@@ -3,7 +3,7 @@ package descendente;
 import procesamiento.TinyASint.Exp;
 import procesamiento.TinyASint.Dec;
 import procesamiento.TinyASint.Decs;
-import procesamiento.TinyASint.Prog;
+import procesamiento.TinyASint.Programa;
 import procesamiento.TinyASint.Inst;
 import procesamiento.TinyASint.Insts;
 import procesamiento.TinyASint.Tipo;
