@@ -7,10 +7,15 @@ package descendente;
 import procesamiento.TinyASint.Exp;
 import procesamiento.TinyASint.Dec;
 import procesamiento.TinyASint.Decs;
-import procesamiento.TinyASint.Programa;
+import procesamiento.TinyASint.Prog;
 import procesamiento.TinyASint.Inst;
 import procesamiento.TinyASint.Insts;
 import procesamiento.TinyASint.Tipo;
+import procesamiento.TinyASint.ParamForm;
+import procesamiento.TinyASint.Campo;
+import procesamiento.TinyASint.Campos;
+import procesamiento.TinyASint.ParReales;
+import procesamiento.TinyASint.LExpresiones;
 import procesamiento.SemOps;
 
 public class ConstructorAST1 {
@@ -77,7 +82,7 @@ PARSER_END(ConstructorAST1)
   Decs restoDec(Dec dec) : {Decs decs;}
 						   {<PtoComa> decs=Decs() {return sem.declaracion_varias(dec, decs);} |
 						   {return sem.declaracion_una(dec);}}
-  Dec Dec() : {Token d; Tipo tipo; Token t; ParamForm param; Prog bloque;}
+  Dec Dec() : {Token d; Tipo tipo; StringLocalizado t; ParamForm param; Prog bloque;}
 			  {d=<var> tipo=Tipo() t=<id> {return sem.dec_habitual(tipo, t);} |
 			   d=<type> tipo=Tipo() t=<id> {return sem.dec_type(tipo, t);} |
 			   d=<proc> t=<id> param=paramForm() bloque=bloque() {return sem.dec_proc(t, param, bloque);}}
@@ -105,7 +110,7 @@ PARSER_END(ConstructorAST1)
 				 t=trecord() {return t;} |
 				 t=tpointer() {return t;} |
 				 t=<id> {return t;}}
-  Tipo tarray() : {Token array; Nentero num; Tipo tipo;}
+  Tipo tarray() : {Token array; nEntero num; Tipo tipo;}
 				  {array=<id> "[" num=<Nentero> "]" <of> tipo=Tipo() {return sem.tArray(num, tipo);}}
   Tipo trecord() : {Campo campo; Campos campos;}
 				   {<record> "(" campo=campo() campos=campos() ")" {return sem.tRecordAux(campo, campos);}}
@@ -121,10 +126,10 @@ PARSER_END(ConstructorAST1)
   Insts restoIns(Inst instr) : {Insts instrs;}
 								 {<PtoComa> instrs=Insts()  {return sem.instruccion_varias(instr, instrs);} |
 								 {return sem.instruccion_una(instr);}}
-  Inst Inst() : {Exp ex1; Exp ex2; InstrsOp op1; InstrsOp op2; Token i; ParReales par; Prog blo; Insts res;}
+  Inst Inst() : {Exp ex1; Exp ex2; InstrOp op1; InstrOp op2; Token i; ParReales par; Prog blo; Insts res;}
 				  {ex1=expr() "=" ex2=expr() {return sem.instuccion_asig(ex1, ex2);} |
-				   <pif> ex1=expr() <then> op1=InstrsOp() res=restoIf(ex1, op1) {return res;} |
-				   <pwhile> ex1=expr() <pdo> op1=InstrsOp() <endwhile> {return sem.instruccion_while(ex1, op1);} |
+				   <pif> ex1=expr() <then> op1=InstrOp() res=restoIf(ex1, op1) {return res;} |
+				   <pwhile> ex1=expr() <pdo> op1=InstrOp() <endwhile> {return sem.instruccion_while(ex1, op1);} |
 				   <read> ex1=expr() {return sem.instruccion_read(ex1);} |
 				   <write> ex1=expr() {return sem.instruccion_write(ex1);} |
 				   <nl> {return sem.instruccion_nl();} |
@@ -132,12 +137,12 @@ PARSER_END(ConstructorAST1)
 				   <delete> ex1=expr() {return sem.instruccion_delete(ex1);} |
 				   <call> i=<id> par=parReales() {return sem.instruccion_call(i, par);} |
 				   blo=bloque() {return sem.instruccion_bloque(blo);}}
-  InstrsOp InstrsOp() : {Insts inst; Insts instrs;}
+  InstrOp InstrOp() : {Insts inst; Insts instrs;}
 						{inst=Insts() instrs=Insts() {return sem.instrOpAux(inst, instrs);} |
 						{return null;}}
-  Inst restoIf(Exp e, InstrsOp op1) : {InstrsOp op2;}
+  Inst restoIf(Exp e, InstrOp op1) : {InstrOp op2;}
 									   {<endif> {return sem.instruccion_ifAux(e, op1);} |
-									    <pelse> op2=InstrsOp() <endif> {return sem.instruccion_ifelseAux(e, op1, op2);}} 
+									    <pelse> op2=InstrOp() <endif> {return sem.instruccion_ifelseAux(e, op1, op2);}} 
   ParReales parReales() : {ParReales p;}
 						  {"(" p=restoPaRe() {return p;}}
   ParReales restoPaRe() : {Exp ex; LExpresiones lexp;}
@@ -194,13 +199,13 @@ PARSER_END(ConstructorAST1)
 			  e=<pnull> {return e;} |
 			  e=<literalCad> {return e;} |
 			  e=<id> {return e;}}
-  string op1AI() : {}
+  String op1AI() : {}
 				   {<and> {return "and";} |
 				    <or> {return "or";}}
-  string op2AI() : {Token res;}
+  String op2AI() : {Token res;}
 				   {">" res=resto('>') {return res;}
 				    "<" res=resto('<') {return res;}}
-  string resto(char m) : {}
+  String resto(char m) : {}
 						 {"=" {return (m+'=');} |
 						 {return m;}}
   char op3NA() : {}

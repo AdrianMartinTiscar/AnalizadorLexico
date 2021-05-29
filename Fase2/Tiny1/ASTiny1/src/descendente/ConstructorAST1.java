@@ -4,10 +4,15 @@ package descendente;
 import procesamiento.TinyASint.Exp;
 import procesamiento.TinyASint.Dec;
 import procesamiento.TinyASint.Decs;
-import procesamiento.TinyASint.Programa;
+import procesamiento.TinyASint.Prog;
 import procesamiento.TinyASint.Inst;
 import procesamiento.TinyASint.Insts;
 import procesamiento.TinyASint.Tipo;
+import procesamiento.TinyASint.ParamForm;
+import procesamiento.TinyASint.Campo;
+import procesamiento.TinyASint.Campos;
+import procesamiento.TinyASint.ParReales;
+import procesamiento.TinyASint.LExpresiones;
 import procesamiento.SemOps;
 
 public class ConstructorAST1 implements ConstructorAST1Constants {
@@ -86,7 +91,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public Dec Dec() throws ParseException {
-               Token d; Tipo tipo; Token t; ParamForm param; Prog bloque;
+               Token d; Tipo tipo; StringLocalizado t; ParamForm param; Prog bloque;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case var:
       d = jj_consume_token(var);
@@ -251,7 +256,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public Tipo tarray() throws ParseException {
-                   Token array; Nentero num; Tipo tipo;
+                   Token array; nEntero num; Tipo tipo;
     array = jj_consume_token(id);
     jj_consume_token(53);
     num = jj_consume_token(Nentero);
@@ -329,7 +334,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public Inst Inst() throws ParseException {
-                 Exp ex1; Exp ex2; InstrsOp op1; InstrsOp op2; Token i; ParReales par; Prog blo; Insts res;
+                 Exp ex1; Exp ex2; InstrOp op1; InstrOp op2; Token i; ParReales par; Prog blo; Insts res;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ptrue:
     case pfalse:
@@ -351,17 +356,17 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
       jj_consume_token(pif);
       ex1 = expr();
       jj_consume_token(then);
-      op1 = InstrsOp();
+      op1 = InstrOp();
       res = restoIf(ex1, op1);
-                                                                                                 {if (true) return res;}
+                                                                                                {if (true) return res;}
       break;
     case pwhile:
       jj_consume_token(pwhile);
       ex1 = expr();
       jj_consume_token(pdo);
-      op1 = InstrsOp();
+      op1 = InstrOp();
       jj_consume_token(endwhile);
-                                                                                        {if (true) return sem.instruccion_while(ex1, op1);}
+                                                                                       {if (true) return sem.instruccion_while(ex1, op1);}
       break;
     case read:
       jj_consume_token(read);
@@ -404,8 +409,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     throw new Error("Missing return statement in function");
   }
 
-  final public InstrsOp InstrsOp() throws ParseException {
-                         Insts inst; Insts instrs;
+  final public InstrOp InstrOp() throws ParseException {
+                       Insts inst; Insts instrs;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ptrue:
     case pfalse:
@@ -437,8 +442,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Inst restoIf(Exp e, InstrsOp op1) throws ParseException {
-                                       InstrsOp op2;
+  final public Inst restoIf(Exp e, InstrOp op1) throws ParseException {
+                                      InstrOp op2;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case endif:
       jj_consume_token(endif);
@@ -446,9 +451,9 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
       break;
     case pelse:
       jj_consume_token(pelse);
-      op2 = InstrsOp();
+      op2 = InstrOp();
       jj_consume_token(endif);
-                                                                                                            {if (true) return sem.instruccion_ifelseAux(e, op1, op2);}
+                                                                                                           {if (true) return sem.instruccion_ifelseAux(e, op1, op2);}
       break;
     default:
       jj_la1[12] = jj_gen;
@@ -780,7 +785,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     throw new Error("Missing return statement in function");
   }
 
-  final public string op1AI() throws ParseException {
+  final public String op1AI() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case and:
       jj_consume_token(and);
@@ -798,7 +803,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     throw new Error("Missing return statement in function");
   }
 
-  final public string op2AI() throws ParseException {
+  final public String op2AI() throws ParseException {
                     Token res;
     jj_consume_token(58);
     res = resto('>');
@@ -809,7 +814,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     throw new Error("Missing return statement in function");
   }
 
-  final public string resto(char m) throws ParseException {
+  final public String resto(char m) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case asig:
       jj_consume_token(asig);
