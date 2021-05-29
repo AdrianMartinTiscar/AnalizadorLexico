@@ -4,11 +4,14 @@ options  {
 PARSER_BEGIN(ConstructorAST1)
 package descendente;
 
-import asint.Tiny1ASint.Exp;
-import asint.Tiny1ASint.Dec;
-import asint.Tiny1ASint.Decs;
-import asint.Tiny1ASint.Programa;
-import semops.SemOps;
+import procesamiento.TinyASint.Exp;
+import procesamiento.TinyASint.Dec;
+import procesamiento.TinyASint.Decs;
+import procesamiento.TinyASint.Programa;
+import procesamiento.TinyASint.Instrs;
+import procesamiento.TinyASint.Insts;
+import procesamiento.TinyASint.Tipo;
+import procesamiento.SemOps;
 
 public class ConstructorAST1 {
 	private SemOps sem = new SemOps();
@@ -66,120 +69,121 @@ PARSER_END(ConstructorAST1)
   TOKEN:{<literalCad:"\""(~["\n","\t","\b","\r"])*"\"">}
 
   Prog ProgramaPrev() : {Programa prog;} {prog=Programa() <EOF> {return prog;}}
-  Prog Programa() : {Decs decs; Instrs instrs;}
-					{decs=Decs() <Separacion> instrs=Instrs() {return sem.programaAux(decs, instrs);} |
-					{instrs=Instrs() {return sem.programaAux(instrs);}}
-  Decs Decs() : {Dec dec; restDec;}
+  Prog Programa() : {Decs decs; Insts instrs;}
+					{decs=Decs() <Separacion> instrs=Insts() {return sem.programa_conDecs(decs, instrs);} |
+					 instrs=Insts() {return sem.programa_sinDecs(instrs);}}
+  Decs Decs() : {Dec dec; Decs restDec;}
 				{dec=Dec() restDec=restoDec(dec) {return restDec;}}
   Decs restoDec(Dec dec) : {Decs decs;}
-						   {<PtoComa> decs=declaracion_varias(sem.decs(dec, decs)) {return decs;} |
-						   {return declaracion_una(dec);}}
-  Dec Dec() : {Token d; tipo; Token id; param; Prog bloque;}
-			  {d=<var> {tipo=Tipo() id=<id> {return dec(tipo, id);}} |
-			   d=<type> {tipo=Tipo() id=<id> {return dec(tipo, id);}} |
-			   d=<proc> {id=<id> param=paramForm() bloque=bloque() {return dec(id, param, bloque);}}}
-  Param paramForm() : {Param paramD, Param paramL} 
-					  {"(" paramD=paramFormD() paramL=LparamForm() ")" {return param_formAux(paramD, paramL);}} 
-  Param paramFormD() : {tipo; restparam;}
+						   {<PtoComa> decs=Decs() {return sem.declaracion_varias(dec, decs);} |
+						   {return sem.declaracion_una(dec);}}
+  Dec Dec() : {Token d; Tipo tipo; Token t; ParamForm param; Prog bloque;}
+			  {d=<var> tipo=Tipo() t=<id> {return sem.dec_habitual(tipo, t);} |
+			   d=<type> tipo=Tipo() t=<id> {return sem.dec_type(tipo, t);} |
+			   d=<proc> t=<id> param=paramForm() bloque=bloque() {return sem.dec_proc(t, param, bloque);}}
+  ParamForm paramForm() : {ParamForm paramD; ParamForm paramL;} 
+					  {"(" paramD=paramFormD() paramL=LparamForm() ")" {return sem.param_formAux(paramD, paramL);}} 
+  ParamForm paramFormD() : {Tipo tipo; ParamForm restparam;}
 					   {tipo=Tipo() restparam=restParamFormD(tipo) {return restparam;} |
 					   {return null;}}
-  Param restParamFormD(Token tipo) : {Token id}
-									 {"&" id=<id> {return param_formAux(tipo, id);} |
-									 {return  param_formAux(tipo, id);}} 
-  Param LparamForm() : {Param paramD, Param paramL}
+  ParamForm restParamFormD(Tipo tipo) : {Token t;}
+									 {"&" t=<id> {return sem.ParamDAmp(tipo, t);} |
+									  t=<id> {return sem.ParamD(tipo, t);}} 
+  ParamForm LparamForm() : {ParamForm param; ParamForm paramL;}
 					   {"," paramD=paramFormD() paramL=LparamForm() {return param_formAux(paramD, paramL);} |
 					   {return null;}}
-  Prog bloque() : {Prog programa}
+  Prog bloque() : {Prog programa;}
 				  {"(" programa=Programa() ")" {return programa;}}
-  Tipo tipoBas() : {<pint> {return int();} |
-				   <bool> {return bool();} |
-				   <real> {return real();} |
-				   <string> {return string();}}
-  Tipo tipo() : {Token t}
+  Tipo tipoBas() : {}
+				   {<pint> {return intt();} |
+				   <bool> {return boolt();} |
+				   <real> {return realt();} |
+				   <string> {return stringt();}}
+  Tipo Tipo() : {Token t;}
 				{t=tipoBas() {return t;} |
 				 t=tarray() {return t;} |
 				 t=trecord() {return t;} |
 				 t=tpointer() {return t;} |
 				 t=<id> {return t;}}
-  Tipo tarray() : {Token array, Nentero num, Token tipo}
-				  {array=<id> "[" num=<Nentero> "]" <of> tipo=tipo() {return tarray(num, tipo);}}
-  Tipo trecord() : {Campo campo, Campos campos}
-				   {<record> "(" campo=campo() campos=campos() ")" {return tRecordAux(campo, campos);}}
-  Tipo campos() : {Campo campo, Campos campos}
-				  {<PtoComa> campo=campo() campos=campos() {return camposAux(campo, campos);} |
+  Tipo tarray() : {Token array; Nentero num; Tipo tipo;}
+				  {array=<id> "[" num=<Nentero> "]" <of> tipo=Tipo() {return sem.tArray(num, tipo);}}
+  Tipo trecord() : {Campo campo; Campos campos;}
+				   {<record> "(" campo=campo() campos=campos() ")" {return sem.tRecordAux(campo, campos);}}
+  Tipo campos() : {Campo campo; Campos campos;}
+				  {<PtoComa> campo=campo() campos=campos() {return sem.camposAux(campo, campos);} |
 				  {return null;}}
-  Tipo campo() : {Token t, Token id}
-				 {t=tipo() id=<id> {return campo(t, id);}}
-  Tipo tpointer() : {Token t}
-					{<pointer> t=tipo() {return tpointer(t);}} 
-  Instrs instrs() : {Instr instr; restoins;}
-                    {instr=instr() restoins=restoIns(instr) {return restoins;}}
-  Instrs restoIns(Instr instr) : {Instrs instrs}
-								 {<PtoComa> instrs=instruccion_varias(instr, instrs) {return instrs;} |
-								 {return instruccion_una(instr);}}
-  Instr Instr() : {Exp ex1; Exp ex2; InstrsOp op1; InstrsOp op2; Token id; ParReales par; Prog blo; Token res;}
-				  {ex1=expr() "=" ex2=expr() {return instuccion_asig(ex1, ex2);} |
-				   <if> ex1=expr() <then> op1=InstrsOp() res=restoIf(ex1, op1) {return res;} |
-				   <while> ex1=expr() <do> op1=InstrsOp() <endwhile> {return instr_while(ex1, op1);} |
-				   <read> ex1=expr() {return instruccion_read(ex1);} |
-				   <write> ex1=expr() {return instruccion_write(ex1);} |
-				   <nl> {return instruccion_nl();} |
-				   <new> ex1=expr() {return instruccion_new(ex1);} |
-				   <delete> ex1=expr() {return instruccion_delete(ex1);} |
-				   <call> id=<id> par=parReales() {return instruccion_call(id, par);} |
-				   blo=bloque() {return instruccion_bloque(blo);}}
-  InstrsOp InstrsOp() : {Instr inst; Instrs instrs}
-						{inst=Instr() instrs=Instrs() {return instrOpAux(inst, instrs);} |
+  Tipo campo() : {Tipo t; Token i;}
+				 {t=Tipo() i=<id> {return sem.campo(t, i);}}
+  Tipo tpointer() : {Tipo t;}
+					{<pointer> t=Tipo() {return sem.tPointer(t);}} 
+  Insts Insts() : {Inst instr; Insts restoins;}
+                    {instr=Inst() restoins=restoIns(instr) {return restoins;}}
+  Insts restoIns(Inst instr) : {Insts instrs;}
+								 {<PtoComa> instrs=Insts()  {return sem.instruccion_varias(instr, instrs);} |
+								 {return sem.instruccion_una(instr);}}
+  Inst Inst() : {Exp ex1; Exp ex2; InstrsOp op1; InstrsOp op2; Token i; ParReales par; Prog blo; Insts res;}
+				  {ex1=expr() "=" ex2=expr() {return sem.instuccion_asig(ex1, ex2);} |
+				   <pif> ex1=expr() <then> op1=InstrsOp() res=restoIf(ex1, op1) {return res;} |
+				   <pwhile> ex1=expr() <pdo> op1=InstrsOp() <endwhile> {return sem.instruccion_while(ex1, op1);} |
+				   <read> ex1=expr() {return sem.instruccion_read(ex1);} |
+				   <write> ex1=expr() {return sem.instruccion_write(ex1);} |
+				   <nl> {return sem.instruccion_nl();} |
+				   <pnew> ex1=expr() {return sem.instruccion_new(ex1);} |
+				   <delete> ex1=expr() {return sem.instruccion_delete(ex1);} |
+				   <call> i=<id> par=parReales() {return sem.instruccion_call(i, par);} |
+				   blo=bloque() {return sem.instruccion_bloque(blo);}}
+  InstrsOp InstrsOp() : {Insts inst; Insts instrs;}
+						{inst=Insts() instrs=Insts() {return sem.instrOpAux(inst, instrs);} |
 						{return null;}}
-  Instr restoIf(Exp e; InstrsOp op1) : {InstrsOp op2;}
-									   {<endif> {return instruccion_ifAux(e, op1);} |
-									    <else> op2=InstrsOp() <endif> {return instruccion_ifelseAux(e, op1, op2);}} 
+  Inst restoIf(Exp e, InstrsOp op1) : {InstrsOp op2;}
+									   {<endif> {return sem.instruccion_ifAux(e, op1);} |
+									    <pelse> op2=InstrsOp() <endif> {return sem.instruccion_ifelseAux(e, op1, op2);}} 
   ParReales parReales() : {ParReales p;}
 						  {"(" p=restoPaRe() {return p;}}
   ParReales restoPaRe() : {Exp ex; LExpresiones lexp;}
-						  {ex=expr() lexp=lExpresiones() ")" {return parRealesAux(ex, lexp);} |
-						  ")" {return parRealesAux(null, null);}}
+						  {ex=expr() lexp=lExpresiones() ")" {return sem.parRealesAux(ex, lexp);} |
+						  ")" {return sem.parRealesAux(null, null);}}
   LExpresiones lExpresiones() : {Exp ex; LExpresiones lexp;}
-								{"," ex=expr() lexp=lExpresiones() {return lExpresionesAux(ex, lexp);} |
+								{"," ex=expr() lexp=lExpresiones() {return sem.lExpresionesAux(ex, lexp);} |
 								{return null;}}
   Exp expr() : {Exp ex;}
 			   {ex=E0() {return ex;}}
   Exp E0() : {Exp e1; Exp res;}
 			 {e1=E1() res=restoE0(e1) {return res;}}
-  Exp restoE0(Exp e1) : {Exp ev; Exp e}
-						{<menos> ev=E1() e=resta(e1, ev) {return e;} |
-						 <mas> ev=E0() e=suma(e1, ev) {return e;} |
+  Exp restoE0(Exp e1) : {Exp ev;}
+						{<menos> ev=E1() {return sem.exp(resta(e1, ev));} |
+						 <mas> ev=E0() {return sem.exp(suma(e1, ev));} |
 						{return e1;}}
   Exp E1() : {Exp e2; Exp res;}
 			 {e2=E2() res=rest2E1(e2) {return res;}}
   Exp rest2E1(Exp e2) : {Token op; Exp ev; Exp res;}
-					{op=op1AI() ev=E2() res=rest2E1(ev) {return exp(op, e2, res);} |
+					{op=op1AI() ev=E2() res=rest2E1(ev) {return sem.exp(op, e2, res);} |
 					{return e2;}}
   Exp E2() : {Exp e3; Exp res;}
 			 {e3=E3() res=rest2E2(e3) {return res;}}
   Exp rest2E2(Exp e3) : {Token op; Exp ev; Exp res;}
-					{op=op2AI() ev=E3() res=rest2E2(ev) {return exp(op, e3, res);} |
+					{op=op2AI() ev=E3() res=rest2E2(ev) {return sem.exp(op, e3, res);} |
 					{return e3;}}
   Exp E3() : {Exp e4; Exp res;}
 			 {e4=E4() res=restE3(e4) {return res;}}
   Exp restE3(Exp e4) : {Token op; Exp ev; Exp res;}
-					{op=op3NA() ev=E4() res=restE3(ev) {return exp(op, e4, res);} |
+					{op=op3NA() ev=E4() res=restE3(ev) {return sem.exp(op, e4, res);} |
 					{return e4;}}
   Exp E4() : {Exp e;}
-			 {<menos> e=E5() {return neg(e);} |
-			  <not> e=E4() {return not(e);} |
+			 {<menos> e=E5() {return sem.neg(e);} |
+			  <not> e=E4() {return sem.not(e);} |
 			  e=E5() {return e;}}
-  Exp E5() : {Exp e6, Exp res;}
+  Exp E5() : {Exp e6; Exp res;}
 			 {e6=E6() res=Resto2E5(e6) {return res;}}			 
-  Exp Resto2E5(Exp e6) : {Exp res; Exp res2; Exp rese5}
+  Exp Resto2E5(Exp e6) : {Exp res; Exp res2; Exp rese5;}
 						 {res=RestoE5(e6) res2=Resto2E5(res) {return res2;} |
 						 {return e6;}}
-  Exp RestoE5(Exp res) : {Exp e; Token id;}
-						 {"[" e=expr() "]" {return indice(res, e);} |
-						  "." id=<id> {return punto(res, id);} |
-						  "->" id=<id> {return flecha(res, id);}}  
+  Exp RestoE5(Exp res) : {Exp e; Token i;}
+						 {"[" e=expr() "]" {return sem.indice(res, e);} |
+						  "." i=<id> {return sem.punto(res, i);} |
+						  "->" i=<id> {return sem.flecha(res, i);}}  
   Exp E6() : {Exp ev;}
-			 {"*" ev=E6() {return indireccion(ev);} |
+			 {"*" ev=E6() {return sem.indireccion(ev);} |
 			  ev=E7() {return ev;}}
   Exp E7() : {Exp e;}
 			 {"(" e=E0() ")" {return e;} |
@@ -187,7 +191,7 @@ PARSER_END(ConstructorAST1)
 			  e=<Nreal> {return e;} |
 			  e=<ptrue> {return e;} |
 			  e=<pfalse> {return e;} |
-			  e=<null> {return e;} |
+			  e=<pnull> {return e;} |
 			  e=<literalCad> {return e;} |
 			  e=<id> {return e;}}
   string op1AI() : {}
@@ -197,7 +201,7 @@ PARSER_END(ConstructorAST1)
 				   {">" res=resto('>') {return res;}
 				    "<" res=resto('<') {return res;}}
   string resto(char m) : {}
-						 {"=" {return (m+=);} |
+						 {"=" {return (m+'=');} |
 						 {return m;}}
   char op3NA() : {}
 				 {"*" {return '*';} |
