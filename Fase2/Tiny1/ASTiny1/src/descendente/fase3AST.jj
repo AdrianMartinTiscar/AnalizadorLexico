@@ -104,7 +104,7 @@ PARSER_END(ConstructorAST1)
 					   {"," paramd=paramFormD() paramL=LparamForm() {return sem.lparamFormAux(paramd, paramL);} |
 					   {return null;}}
   Bloque bloque() : {Prog programa;}
-				    {"(" programa=Programa() ")" {return sem.bloque(programa);}}
+				    {"{" programa=Programa() "}" {return sem.bloque(programa);}}
   Tipo tipoBas() : {}
 				   {<pint> {return sem.intt();} |
 				   <bool> {return sem.boolt();} |
@@ -117,7 +117,7 @@ PARSER_END(ConstructorAST1)
 				 t=tpointer() {return t;} |
 				 i=<id> {return sem.tipoin(sem.str(i.image,i.beginLine,i.beginColumn));}}
   Tipo tarray() : {Token array; Token num; Tipo tipo;}
-				  {array=<id> "[" num=<Nentero> "]" <of> tipo=Tipo() {return sem.tArray(sem.str(num.image,num.beginLine,num.beginColumn), tipo);}}
+				  {array=<array> "[" num=<Nentero> "]" <of> tipo=Tipo() {return sem.tArray(sem.str(num.image,num.beginLine,num.beginColumn), tipo);}}
   Tipo trecord() : {Campo campo; Campos campos;}
 				   {<record> "(" campo=campo() campos=campos() ")" {return sem.trecordAux(campo, campos);}}
   Campos campos() : {Campo campo; Campos campos;}

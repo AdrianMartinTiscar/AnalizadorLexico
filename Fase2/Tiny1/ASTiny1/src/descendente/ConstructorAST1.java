@@ -61,7 +61,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     case Nreal:
     case literalCad:
     case 49:
-    case 57:
+    case 53:
+    case 59:
       instrs = Insts();
                                                          {if (true) return sem.programa_sinDecs(instrs);}
       break;
@@ -144,6 +145,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     case bool:
     case string:
     case record:
+    case array:
     case pointer:
     case id:
       tipo = Tipo();
@@ -195,9 +197,9 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
 
   final public Bloque bloque() throws ParseException {
                      Prog programa;
-    jj_consume_token(49);
+    jj_consume_token(53);
     programa = Programa();
-    jj_consume_token(50);
+    jj_consume_token(54);
                                                                   {if (true) return sem.bloque(programa);}
     throw new Error("Missing return statement in function");
   }
@@ -238,7 +240,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
       t = tipoBas();
                                               {if (true) return t;}
       break;
-    case id:
+    case array:
       t = tarray();
                                              {if (true) return t;}
       break;
@@ -250,6 +252,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
       t = tpointer();
                                                {if (true) return t;}
       break;
+    case id:
       i = jj_consume_token(id);
                                          {if (true) return sem.tipoin(sem.str(i.image,i.beginLine,i.beginColumn));}
       break;
@@ -263,13 +266,13 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
 
   final public Tipo tarray() throws ParseException {
                    Token array; Token num; Tipo tipo;
-    array = jj_consume_token(id);
-    jj_consume_token(53);
+    array = jj_consume_token(array);
+    jj_consume_token(55);
     num = jj_consume_token(Nentero);
-    jj_consume_token(54);
+    jj_consume_token(56);
     jj_consume_token(of);
     tipo = Tipo();
-                                                                                      {if (true) return sem.tArray(sem.str(num.image,num.beginLine,num.beginColumn), tipo);}
+                                                                                         {if (true) return sem.tArray(sem.str(num.image,num.beginLine,num.beginColumn), tipo);}
     throw new Error("Missing return statement in function");
   }
 
@@ -352,7 +355,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     case Nreal:
     case literalCad:
     case 49:
-    case 57:
+    case 59:
       ex1 = expr();
       jj_consume_token(asig);
       ex2 = expr();
@@ -404,6 +407,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
       par = parReales();
                                                                   {if (true) return sem.instruccion_call(sem.str(i.image,i.beginLine,i.beginColumn), par);}
       break;
+    case 53:
       blo = bloque();
                                                  {if (true) return sem.instruccion_bloque(blo);}
       break;
@@ -436,7 +440,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     case Nreal:
     case literalCad:
     case 49:
-    case 57:
+    case 53:
+    case 59:
       inst = Inst();
       instrs = Insts();
                                                                              {if (true) return sem.instrOpAux(inst, instrs);}
@@ -490,7 +495,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     case Nreal:
     case literalCad:
     case 49:
-    case 57:
+    case 59:
       ex = expr();
       lexp = lExpresiones();
       jj_consume_token(50);
@@ -595,7 +600,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   final public Exp rest2E2(Exp e3) throws ParseException {
                          String op; Exp ev; Exp res;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 58:
+    case 60:
       op = op2AI();
       ev = E3();
       res = rest2E2(ev);
@@ -619,9 +624,9 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   final public Exp restE3(Exp e4) throws ParseException {
                         String op; Exp ev; Exp res;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 57:
-    case 60:
-    case 61:
+    case 59:
+    case 62:
+    case 63:
       op = op3NA();
       ev = E4();
       res = restE3(ev);
@@ -655,7 +660,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     case Nreal:
     case literalCad:
     case 49:
-    case 57:
+    case 59:
       e = E5();
                                   {if (true) return e;}
       break;
@@ -678,9 +683,9 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   final public Exp Resto2E5(Exp e6) throws ParseException {
                           Exp res; Exp res2; Exp rese5;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 53:
     case 55:
-    case 56:
+    case 57:
+    case 58:
       res = RestoE5(e6);
       res2 = Resto2E5(res);
                                                                                       {if (true) return res2;}
@@ -695,19 +700,19 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   final public Exp RestoE5(Exp res) throws ParseException {
                           Exp e; Token i;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 53:
-      jj_consume_token(53);
-      e = expr();
-      jj_consume_token(54);
-                                                                    {if (true) return sem.indice(res, e);}
-      break;
     case 55:
       jj_consume_token(55);
+      e = expr();
+      jj_consume_token(56);
+                                                                    {if (true) return sem.indice(res, e);}
+      break;
+    case 57:
+      jj_consume_token(57);
       i = jj_consume_token(id);
                                                               {if (true) return sem.punto(res, sem.str(i.image,i.beginLine,i.beginColumn));}
       break;
-    case 56:
-      jj_consume_token(56);
+    case 58:
+      jj_consume_token(58);
       i = jj_consume_token(id);
                                                                {if (true) return sem.flecha(res, sem.str(i.image,i.beginLine,i.beginColumn));}
       break;
@@ -722,8 +727,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   final public Exp E6() throws ParseException {
               Exp ev;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 57:
-      jj_consume_token(57);
+    case 59:
+      jj_consume_token(59);
       ev = E6();
                                        {if (true) return sem.indir(ev);}
       break;
@@ -811,10 +816,10 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
 
   final public String op2AI() throws ParseException {
                     String res;
-    jj_consume_token(58);
+    jj_consume_token(60);
     res = resto(">");
                                                         {if (true) return res;}
-    jj_consume_token(59);
+    jj_consume_token(61);
     res = resto("<");
                                                         {if (true) return res;}
     throw new Error("Missing return statement in function");
@@ -835,16 +840,16 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
 
   final public String op3NA() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 57:
-      jj_consume_token(57);
+    case 59:
+      jj_consume_token(59);
                                        {if (true) return "*";}
       break;
-    case 60:
-      jj_consume_token(60);
+    case 62:
+      jj_consume_token(62);
                                        {if (true) return "/";}
       break;
-    case 61:
-      jj_consume_token(61);
+    case 63:
+      jj_consume_token(63);
                                        {if (true) return "%";}
       break;
     default:
@@ -868,10 +873,10 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
       jj_la1_1();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x91e3000,0x0,0x80000,0x90004e00,0x0,0x0,0x4e00,0x90004e00,0x0,0x0,0x9163000,0x9163000,0xc00000,0x63000,0x0,0x0,0x18000,0x0,0x0,0x63000,0x0,0x0,0x43000,0x43000,0x18000,0x0,0x0,};
+      jj_la1_0 = new int[] {0x91e3000,0x0,0x80000,0xb0004e00,0x0,0x0,0x4e00,0xb0004e00,0x0,0x0,0x9163000,0x9163000,0xc00000,0x63000,0x0,0x0,0x18000,0x0,0x0,0x63000,0x0,0x0,0x43000,0x43000,0x18000,0x0,0x0,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x203f07f,0x100,0x60,0x2000,0x82000,0x100000,0x0,0x2000,0x100,0x100,0x203f01f,0x203f01f,0x0,0x207f000,0x100000,0x1800,0x0,0x4000000,0x32000000,0x203f000,0x1a00000,0x1a00000,0x203e000,0x3e000,0x0,0x200,0x32000000,};
+      jj_la1_1 = new int[] {0x823f07f,0x100,0x60,0x2000,0x82000,0x100000,0x0,0x2000,0x100,0x100,0x823f01f,0x823f01f,0x0,0x807f000,0x100000,0x1800,0x0,0x10000000,0xc8000000,0x803f000,0x6800000,0x6800000,0x803e000,0x3e000,0x0,0x200,0xc8000000,};
    }
 
   public ConstructorAST1(java.io.InputStream stream) {
@@ -970,8 +975,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[62];
-    for (int i = 0; i < 62; i++) {
+    boolean[] la1tokens = new boolean[64];
+    for (int i = 0; i < 64; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
@@ -990,7 +995,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
         }
       }
     }
-    for (int i = 0; i < 62; i++) {
+    for (int i = 0; i < 64; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

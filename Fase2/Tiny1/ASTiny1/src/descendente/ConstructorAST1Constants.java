@@ -107,6 +107,8 @@ public interface ConstructorAST1Constants {
     "\")\"",
     "\"&\"",
     "\",\"",
+    "\"{\"",
+    "\"}\"",
     "\"[\"",
     "\"]\"",
     "\".\"",
