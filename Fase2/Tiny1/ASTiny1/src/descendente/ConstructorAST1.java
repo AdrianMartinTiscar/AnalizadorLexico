@@ -41,7 +41,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
       decs = Decs();
       jj_consume_token(Separacion);
       instrs = Insts();
-                                                                                  {if (true) return sem.programa_conDecs(decs, instrs);}
+                                                                                  {if (true) return sem.prog(decs, instrs);}
       break;
     case ptrue:
     case pfalse:
@@ -184,7 +184,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
       jj_consume_token(52);
       paramd = paramFormD();
       paramL = LparamForm();
-                                                                                         {if (true) return sem.param_formAux(paramd, paramL);}
+                                                                                         {if (true) return sem.lparamFormAux(paramd, paramL);}
       break;
     default:
       jj_la1[5] = jj_gen;
