@@ -601,6 +601,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
                          String op; Exp ev; Exp res;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 60:
+    case 61:
       op = op2AI();
       ev = E3();
       res = rest2E2(ev);
@@ -816,12 +817,22 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
 
   final public String op2AI() throws ParseException {
                     String res;
-    jj_consume_token(60);
-    res = resto(">");
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case 60:
+      jj_consume_token(60);
+      res = resto(">");
                                                         {if (true) return res;}
-    jj_consume_token(61);
-    res = resto("<");
+      break;
+    case 61:
+      jj_consume_token(61);
+      res = resto("<");
                                                         {if (true) return res;}
+      break;
+    default:
+      jj_la1[25] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
     throw new Error("Missing return statement in function");
   }
 
@@ -832,7 +843,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
                                                        {if (true) return (m+"=");}
       break;
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[26] = jj_gen;
                                                   {if (true) return m;}
     }
     throw new Error("Missing return statement in function");
@@ -853,7 +864,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
                                        {if (true) return "%";}
       break;
     default:
-      jj_la1[26] = jj_gen;
+      jj_la1[27] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -865,7 +876,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   public Token token, jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[27];
+  final private int[] jj_la1 = new int[28];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -873,10 +884,10 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
       jj_la1_1();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x91e3000,0x0,0x80000,0xb0004e00,0x0,0x0,0x4e00,0xb0004e00,0x0,0x0,0x9163000,0x9163000,0xc00000,0x63000,0x0,0x0,0x18000,0x0,0x0,0x63000,0x0,0x0,0x43000,0x43000,0x18000,0x0,0x0,};
+      jj_la1_0 = new int[] {0x91e3000,0x0,0x80000,0xb0004e00,0x0,0x0,0x4e00,0xb0004e00,0x0,0x0,0x9163000,0x9163000,0xc00000,0x63000,0x0,0x0,0x18000,0x0,0x0,0x63000,0x0,0x0,0x43000,0x43000,0x18000,0x0,0x0,0x0,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x823f07f,0x100,0x60,0x2000,0x82000,0x100000,0x0,0x2000,0x100,0x100,0x823f01f,0x823f01f,0x0,0x807f000,0x100000,0x1800,0x0,0x10000000,0xc8000000,0x803f000,0x6800000,0x6800000,0x803e000,0x3e000,0x0,0x200,0xc8000000,};
+      jj_la1_1 = new int[] {0x823f07f,0x100,0x60,0x2000,0x82000,0x100000,0x0,0x2000,0x100,0x100,0x823f01f,0x823f01f,0x0,0x807f000,0x100000,0x1800,0x0,0x30000000,0xc8000000,0x803f000,0x6800000,0x6800000,0x803e000,0x3e000,0x0,0x30000000,0x200,0xc8000000,};
    }
 
   public ConstructorAST1(java.io.InputStream stream) {
@@ -885,7 +896,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.InputStream stream) {
@@ -894,7 +905,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
   }
 
   public ConstructorAST1(java.io.Reader stream) {
@@ -903,7 +914,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.Reader stream) {
@@ -912,7 +923,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
   }
 
   public ConstructorAST1(ConstructorAST1TokenManager tm) {
@@ -920,7 +931,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(ConstructorAST1TokenManager tm) {
@@ -928,7 +939,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
   }
 
   final private Token jj_consume_token(int kind) throws ParseException {
@@ -983,7 +994,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 27; i++) {
+    for (int i = 0; i < 28; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

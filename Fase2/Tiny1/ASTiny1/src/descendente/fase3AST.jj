@@ -209,7 +209,7 @@ PARSER_END(ConstructorAST1)
 				   {<and> {return "and";} |
 				    <or> {return "or";}}
   String op2AI() : {String res;}
-				   {">" res=resto(">") {return res;}
+				   {">" res=resto(">") {return res;} |
 				    "<" res=resto("<") {return res;}}
   String resto(String m) : {}
 						 {"=" {return (m+"=");} |
