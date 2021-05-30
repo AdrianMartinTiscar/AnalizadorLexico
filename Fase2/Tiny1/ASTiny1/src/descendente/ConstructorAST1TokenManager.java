@@ -8,10 +8,14 @@ import procesamiento.TinyASint.Inst;
 import procesamiento.TinyASint.Insts;
 import procesamiento.TinyASint.Tipo;
 import procesamiento.TinyASint.ParamForm;
+import procesamiento.TinyASint.LParamForm;
+import procesamiento.TinyASint.ParamD;
 import procesamiento.TinyASint.Campo;
 import procesamiento.TinyASint.Campos;
 import procesamiento.TinyASint.ParReales;
 import procesamiento.TinyASint.LExpresiones;
+import procesamiento.TinyASint.StringLocalizado;
+import procesamiento.TinyASint.InstrOp;
 import procesamiento.SemOps;
 
 public class ConstructorAST1TokenManager implements ConstructorAST1Constants
