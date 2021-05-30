@@ -204,8 +204,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Bloque_vacio resbloque() throws ParseException {
-                              Programa prog;
+  final public Bloque resbloque() throws ParseException {
+                        Prog prog;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ptrue:
     case pfalse:

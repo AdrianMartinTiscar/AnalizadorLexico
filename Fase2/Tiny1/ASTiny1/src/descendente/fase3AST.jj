@@ -105,7 +105,7 @@ PARSER_END(ConstructorAST1)
 					   {return null;}}
   Bloque bloque() : {Bloque blo;}
 				    {"{" blo=resbloque() "}" {return blo;}}
-  Bloque_vacio resbloque() : {Programa prog;}
+  Bloque resbloque() : {Prog prog;}
 					   {prog=Programa() {return sem.bloque(prog);} |
 					    {return sem.bloque_vacio();}}
   Tipo tipoBas() : {}
