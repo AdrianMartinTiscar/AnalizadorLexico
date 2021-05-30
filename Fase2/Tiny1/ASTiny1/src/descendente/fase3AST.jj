@@ -88,19 +88,19 @@ PARSER_END(ConstructorAST1)
   Decs restoDec(Dec dec) : {Decs decs;}
 						   {<PtoComa> decs=Decs() {return sem.declaracion_varias(dec, decs);} |
 						   {return sem.declaracion_una(dec);}}
-  Dec Dec() : {Token d; Tipo tipo; Token t; ParamForm param; Bloque bloque;}
+  Dec Dec() : {Token d; Tipo tipo, tip; Token t; ParamForm param; Bloque bloque;}
 			  {d=<var> tipo=Tipo() t=<id> {return sem.dec_habitual(tipo, sem.str(t.image,t.beginLine,t.beginColumn));} |
-			   d=<type> tipo=Tipo() t=<id> {return sem.dec_type(tipo, sem.str(t.image,t.beginLine,t.beginColumn));} |
-			   d=<proc> t=<id> param=paramForm() bloque=bloque() {return sem.dec_proc(t, param, bloque);}}
+			   d=<type> tipo=Tipo() tip=<id> {return sem.dec_type(tipo, tip);} |
+			   d=<proc> t=<id> param=paramForm() bloque=bloque() {return sem.dec_proc(sem.str(t.image,t.beginLine,t.beginColumn), param, bloque);}}
   ParamForm paramForm() : {ParamD paramD; LParamForm paramL;} 
 					  {"(" paramD=paramFormD() paramL=LparamForm() ")" {return sem.param_formAux(paramD, paramL);}} 
   ParamD paramFormD() : {Tipo tipo; ParamD restparam;}
 					   {tipo=Tipo() restparam=restParamFormD(tipo) {return restparam;} |
 					   {return null;}}
   ParamD restParamFormD(Tipo tipo) : {Token t;}
-									 {"&" t=<id> {return sem.ParamDAmp(tipo, t);} |
-									  t=<id> {return sem.ParamD(tipo, t);}} 
-  LParamForm LparamForm() : {ParamD paramd; LParamForm paramL;}
+									 {"&" t=<id> {return sem.paramDAmp(tipo, t);} |
+									  t=<id> {return sem.paramD(tipo, t);}} 
+  ParamForm LparamForm() : {ParamD paramd; LParamForm paramL;}
 					   {"," paramd=paramFormD() paramL=LparamForm() {return param_formAux(paramd, paramL);} |
 					   {return null;}}
   Bloque bloque() : {Prog programa;}
@@ -116,8 +116,8 @@ PARSER_END(ConstructorAST1)
 				 t=trecord() {return t;} |
 				 t=tpointer() {return t;} |
 				 t=<id> {return t;}}
-  Tipo tarray() : {Token array; NEntero num; Tipo tipo;}
-				  {array=<id> "[" num=<Nentero> "]" <of> tipo=Tipo() {return sem.tArray(num, tipo);}}
+  Tipo tarray() : {Token array; Token num; Tipo tipo;}
+				  {array=<id> "[" num=<Nentero> "]" <of> tipo=Tipo() {return sem.tArray(sem.str(num.image,num.beginLine,num.beginColumn), tipo);}}
   Tipo trecord() : {Campo campo; Campos campos;}
 				   {<record> "(" campo=campo() campos=campos() ")" {return sem.trecordAux(campo, campos);}}
   Campos campos() : {Campo campo; Campos campos;}
@@ -146,7 +146,7 @@ PARSER_END(ConstructorAST1)
   InstrOp InstrOp() : {Inst inst; Insts instrs;}
 						{inst=Inst() instrs=Insts() {return sem.instrOpAux(inst, instrs);} |
 						{return null;}}
-  Insts restoIf(Exp e, InstrOp op1) : {InstrOp op2;}
+  Inst restoIf(Exp e, InstrOp op1) : {InstrOp op2;}
 									   {<endif> {return sem.instruccion_ifAux(e, op1);} |
 									    <pelse> op2=InstrOp() <endif> {return sem.instruccion_ifelseAux(e, op1, op2);}} 
   ParReales parReales() : {ParReales p;}
@@ -196,7 +196,7 @@ PARSER_END(ConstructorAST1)
   Exp E6() : {Exp ev;}
 			 {"*" ev=E6() {return sem.indir(ev);} |
 			  ev=E7() {return ev;}}
-  Exp E7() : {Exp e;}
+  Exp E7() : {Token e;}
 			 {"(" e=E0() ")" {return e;} |
 			  e=<Nentero> {return e;} |
 			  e=<Nreal> {return e;} |

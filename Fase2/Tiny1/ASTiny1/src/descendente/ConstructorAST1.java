@@ -97,7 +97,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public Dec Dec() throws ParseException {
-               Token d; Tipo tipo; Token t; ParamForm param; Bloque bloque;
+               Token d; Tipo tipo, tip; Token t; ParamForm param; Bloque bloque;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case var:
       d = jj_consume_token(var);
@@ -108,15 +108,15 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     case type:
       d = jj_consume_token(type);
       tipo = Tipo();
-      t = jj_consume_token(id);
-                                                        {if (true) return sem.dec_type(tipo, sem.str(t.image,t.beginLine,t.beginColumn));}
+      tip = jj_consume_token(id);
+                                                          {if (true) return sem.dec_type(tipo, tip);}
       break;
     case proc:
       d = jj_consume_token(proc);
       t = jj_consume_token(id);
       param = paramForm();
       bloque = bloque();
-                                                                              {if (true) return sem.dec_proc(t, param, bloque);}
+                                                                              {if (true) return sem.dec_proc(sem.str(t.image,t.beginLine,t.beginColumn), param, bloque);}
       break;
     default:
       jj_la1[2] = jj_gen;
@@ -163,11 +163,11 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     case 51:
       jj_consume_token(51);
       t = jj_consume_token(id);
-                                                                                      {if (true) return sem.ParamDAmp(tipo, t);}
+                                                                                      {if (true) return sem.paramDAmp(tipo, t);}
       break;
     case id:
       t = jj_consume_token(id);
-                                                                                  {if (true) return sem.ParamD(tipo, t);}
+                                                                                  {if (true) return sem.paramD(tipo, t);}
       break;
     default:
       jj_la1[4] = jj_gen;
@@ -177,8 +177,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     throw new Error("Missing return statement in function");
   }
 
-  final public LParamForm LparamForm() throws ParseException {
-                             ParamD paramd; LParamForm paramL;
+  final public ParamForm LparamForm() throws ParseException {
+                            ParamD paramd; LParamForm paramL;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 52:
       jj_consume_token(52);
@@ -262,14 +262,14 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public Tipo tarray() throws ParseException {
-                   Token array; NEntero num; Tipo tipo;
+                   Token array; Token num; Tipo tipo;
     array = jj_consume_token(id);
     jj_consume_token(53);
     num = jj_consume_token(Nentero);
     jj_consume_token(54);
     jj_consume_token(of);
     tipo = Tipo();
-                                                                                      {if (true) return sem.tArray(num, tipo);}
+                                                                                      {if (true) return sem.tArray(sem.str(num.image,num.beginLine,num.beginColumn), tipo);}
     throw new Error("Missing return statement in function");
   }
 
@@ -448,8 +448,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Insts restoIf(Exp e, InstrOp op1) throws ParseException {
-                                       InstrOp op2;
+  final public Inst restoIf(Exp e, InstrOp op1) throws ParseException {
+                                      InstrOp op2;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case endif:
       jj_consume_token(endif);
@@ -747,7 +747,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public Exp E7() throws ParseException {
-              Exp e;
+              Token e;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 49:
       jj_consume_token(49);
