@@ -103,8 +103,13 @@ PARSER_END(ConstructorAST1)
   LParamForm LparamForm() : {ParamD paramd; LParamForm paramL;}
 					   {"," paramd=paramFormD() paramL=LparamForm() {return sem.lparamFormAux(paramd, paramL);} |
 					   {return null;}}
-  Bloque bloque() : {Prog programa;}
-				    {"{" programa=Programa() "}" {return sem.bloque(programa);}}
+  Bloque bloque() : {Bloque blo;}
+				    {"{" blo=resbloque() "}" {return sem.bloque(programa);}}
+  Bloque bloque() : {Bloque blo;}
+				    {"{" blo=resbloque() "}" {return blo;}}
+  Bloque resbloque() : {Programa prog;}
+					   {prog=Programa() {return sem.bloque(prog);} |
+					    {return sem.bloque_vacio();}}
   Tipo tipoBas() : {}
 				   {<pint> {return sem.intt();} |
 				   <bool> {return sem.boolt();} |
