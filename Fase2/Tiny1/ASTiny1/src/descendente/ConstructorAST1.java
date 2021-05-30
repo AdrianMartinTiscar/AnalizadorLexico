@@ -279,10 +279,10 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   final public Tipo trecord() throws ParseException {
                     Campo campo; Campos campos;
     jj_consume_token(record);
-    jj_consume_token(49);
+    jj_consume_token(53);
     campo = campo();
     campos = campos();
-    jj_consume_token(50);
+    jj_consume_token(54);
                                                                                     {if (true) return sem.trecordAux(campo, campos);}
     throw new Error("Missing return statement in function");
   }
