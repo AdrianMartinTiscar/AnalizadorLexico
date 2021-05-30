@@ -20,6 +20,8 @@ import procesamiento.TinyASint.ParReales;
 import procesamiento.TinyASint.LExpresiones;
 import procesamiento.TinyASint.StringLocalizado;
 import procesamiento.TinyASint.InstrOp;
+import procesamiento.TinyASint.Bloque;
+import procesamiento.TinyASint.NEntero;
 import procesamiento.SemOps;
 
 public class ConstructorAST1 {
@@ -86,20 +88,20 @@ PARSER_END(ConstructorAST1)
   Decs restoDec(Dec dec) : {Decs decs;}
 						   {<PtoComa> decs=Decs() {return sem.declaracion_varias(dec, decs);} |
 						   {return sem.declaracion_una(dec);}}
-  Dec Dec() : {Token d; Tipo tipo; StringLocalizado t; ParamForm param; Prog bloque;}
-			  {d=<var> tipo=Tipo() t=<id> {return sem.dec_habitual(tipo, t);} |
-			   d=<type> tipo=Tipo() t=<id> {return sem.dec_type(tipo, t);} |
+  Dec Dec() : {Token d; Tipo tipo; Token t; ParamForm param; Bloque bloque;}
+			  {d=<var> tipo=Tipo() t=<id> {return sem.dec_habitual(tipo, sem.str(t.image,t.beginLine,t.beginColumn));} |
+			   d=<type> tipo=Tipo() t=<id> {return sem.dec_type(tipo, sem.str(t.image,t.beginLine,t.beginColumn));} |
 			   d=<proc> t=<id> param=paramForm() bloque=bloque() {return sem.dec_proc(t, param, bloque);}}
   ParamForm paramForm() : {ParamD paramD; LParamForm paramL;} 
 					  {"(" paramD=paramFormD() paramL=LparamForm() ")" {return sem.param_formAux(paramD, paramL);}} 
-  ParamD paramFormD() : {Tipo tipo; ParamForm restparam;}
+  ParamD paramFormD() : {Tipo tipo; ParamD restparam;}
 					   {tipo=Tipo() restparam=restParamFormD(tipo) {return restparam;} |
 					   {return null;}}
-  ParamForm restParamFormD(Tipo tipo) : {Token t;}
+  ParamD restParamFormD(Tipo tipo) : {Token t;}
 									 {"&" t=<id> {return sem.ParamDAmp(tipo, t);} |
 									  t=<id> {return sem.ParamD(tipo, t);}} 
-  ParamForm LparamForm() : {ParamForm param; ParamForm paramL;}
-					   {"," paramD=paramFormD() paramL=LparamForm() {return param_formAux(paramD, paramL);} |
+  LParamForm LparamForm() : {ParamD paramd; LParamForm paramL;}
+					   {"," paramd=paramFormD() paramL=LparamForm() {return param_formAux(paramd, paramL);} |
 					   {return null;}}
   Bloque bloque() : {Prog programa;}
 				  {"(" programa=Programa() ")" {return programa;}}
@@ -121,8 +123,8 @@ PARSER_END(ConstructorAST1)
   Campos campos() : {Campo campo; Campos campos;}
 				  {<PtoComa> campo=campo() campos=campos() {return sem.campos(campo, campos);} |
 				  {return null;}}
-  Campo campo() : {Tipo t; StringLocalizado i;}
-				 {t=Tipo() i=<id> {return sem.campo(t, i);}}
+  Campo campo() : {Tipo t; Token i;}
+				 {t=Tipo() i=<id> {return sem.campo(t, sem.str(i.image,i.beginLine,i.beginColumn));}}
   Tipo tpointer() : {Tipo t;}
 					{<pointer> t=Tipo() {return sem.tPointer(t);}} 
   Insts Insts() : {Inst instr; Insts restoins;}
@@ -130,8 +132,8 @@ PARSER_END(ConstructorAST1)
   Insts restoIns(Inst instr) : {Insts instrs;}
 								 {<PtoComa> instrs=Insts()  {return sem.instruccion_varias(instr, instrs);} |
 								 {return sem.instruccion_una(instr);}}
-  Inst Inst() : {Exp ex1; Exp ex2; InstrOp op1; InstrOp op2; StringLocalizado i; ParReales par; Bloque blo; Insts res;}
-				  {ex1=expr() "=" ex2=expr() {return sem.instuccion_asig(ex1, ex2);} |
+  Inst Inst() : {Exp ex1; Exp ex2; InstrOp op1; InstrOp op2; Token i; ParReales par; Bloque blo; Insts res;}
+				  {ex1=expr() "=" ex2=expr() {return sem.instruccion_asig(ex1, ex2);} |
 				   <pif> ex1=expr() <then> op1=InstrOp() res=restoIf(ex1, op1) {return res;} |
 				   <pwhile> ex1=expr() <pdo> op1=InstrOp() <endwhile> {return sem.instruccion_while(ex1, op1);} |
 				   <read> ex1=expr() {return sem.instruccion_read(ex1);} |
@@ -139,12 +141,12 @@ PARSER_END(ConstructorAST1)
 				   <nl> {return sem.instruccion_nl();} |
 				   <pnew> ex1=expr() {return sem.instruccion_new(ex1);} |
 				   <delete> ex1=expr() {return sem.instruccion_delete(ex1);} |
-				   <call> i=<id> par=parReales() {return sem.instruccion_call(i, par);} |
+				   <call> i=<id> par=parReales() {return sem.instruccion_call(sem.str(i.image,i.beginLine,i.beginColumn), par);} |
 				   blo=bloque() {return sem.instruccion_bloque(blo);}}
   InstrOp InstrOp() : {Inst inst; Insts instrs;}
 						{inst=Inst() instrs=Insts() {return sem.instrOpAux(inst, instrs);} |
 						{return null;}}
-  Inst restoIf(Exp e, InstrOp op1) : {InstrOp op2;}
+  Insts restoIf(Exp e, InstrOp op1) : {InstrOp op2;}
 									   {<endif> {return sem.instruccion_ifAux(e, op1);} |
 									    <pelse> op2=InstrOp() <endif> {return sem.instruccion_ifelseAux(e, op1, op2);}} 
   ParReales parReales() : {ParReales p;}
@@ -175,7 +177,7 @@ PARSER_END(ConstructorAST1)
 					{return e3;}}
   Exp E3() : {Exp e4; Exp res;}
 			 {e4=E4() res=restE3(e4) {return res;}}
-  Exp restE3(Exp e4) : {char op; Exp ev; Exp res;}
+  Exp restE3(Exp e4) : {String op; Exp ev; Exp res;}
 					{op=op3NA() ev=E4() res=restE3(ev) {return sem.exp(op, e4, res);} |
 					{return e4;}}
   Exp E4() : {Exp e;}
@@ -187,14 +189,14 @@ PARSER_END(ConstructorAST1)
   Exp Resto2E5(Exp e6) : {Exp res; Exp res2; Exp rese5;}
 						 {res=RestoE5(e6) res2=Resto2E5(res) {return res2;} |
 						 {return e6;}}
-  Exp RestoE5(Exp res) : {Exp e; StringLocalizado i;}
+  Exp RestoE5(Exp res) : {Exp e; Token i;}
 						 {"[" e=expr() "]" {return sem.indice(res, e);} |
-						  "." i=<id> {return sem.punto(res, i);} |
-						  "->" i=<id> {return sem.flecha(res, i);}}  
+						  "." i=<id> {return sem.punto(res, sem.str(i.image,i.beginLine,i.beginColumn));} |
+						  "->" i=<id> {return sem.flecha(res, sem.str(i.image,i.beginLine,i.beginColumn));}}  
   Exp E6() : {Exp ev;}
 			 {"*" ev=E6() {return sem.indir(ev);} |
 			  ev=E7() {return ev;}}
-  Exp E7() : {Token e;}
+  Exp E7() : {Exp e;}
 			 {"(" e=E0() ")" {return e;} |
 			  e=<Nentero> {return e;} |
 			  e=<Nreal> {return e;} |
@@ -212,7 +214,7 @@ PARSER_END(ConstructorAST1)
   String resto(String m) : {}
 						 {"=" {return (m+"=");} |
 						 {return m;}}
-  char op3NA() : {}
-				 {"*" {return '*';} |
-				  "/" {return '/';} |
-				  "%" {return '%';}}
+  String op3NA() : {}
+				 {"*" {return "*";} |
+				  "/" {return "/";} |
+				  "%" {return "%";}}

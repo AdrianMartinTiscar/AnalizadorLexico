@@ -16,6 +16,8 @@ import procesamiento.TinyASint.ParReales;
 import procesamiento.TinyASint.LExpresiones;
 import procesamiento.TinyASint.StringLocalizado;
 import procesamiento.TinyASint.InstrOp;
+import procesamiento.TinyASint.Bloque;
+import procesamiento.TinyASint.NEntero;
 import procesamiento.SemOps;
 
 public class ConstructorAST1TokenManager implements ConstructorAST1Constants
