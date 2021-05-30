@@ -178,7 +178,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public LParamForm LparamForm() throws ParseException {
-                             ParamD paramd; ParamForm paramL;
+                             ParamD paramd; LParamForm paramL;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 52:
       jj_consume_token(52);
@@ -747,13 +747,13 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public Exp E7() throws ParseException {
-              Token e;
+              Token e; Exp ex;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 49:
       jj_consume_token(49);
-      e = E0();
+      ex = E0();
       jj_consume_token(50);
-                                          {if (true) return sem.num(sem.str(e.image,e.beginLine,e.beginColumn));}
+                                           {if (true) return ex;}
       break;
     case Nentero:
       e = jj_consume_token(Nentero);
