@@ -97,7 +97,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public Dec Dec() throws ParseException {
-               Token d; Tipo tipo, tip; Token t; ParamForm param; Bloque bloque;
+               Token d; Tipo tipo; Token t; ParamForm param; Bloque bloque;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case var:
       d = jj_consume_token(var);
@@ -108,8 +108,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     case type:
       d = jj_consume_token(type);
       tipo = Tipo();
-      tip = jj_consume_token(id);
-                                                          {if (true) return sem.dec_type(tipo, tip);}
+      t = jj_consume_token(id);
+                                                        {if (true) return sem.dec_type(tipo, sem.tipoin(sem.str(t.image,t.beginLine,t.beginColumn)));}
       break;
     case proc:
       d = jj_consume_token(proc);
@@ -127,7 +127,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public ParamForm paramForm() throws ParseException {
-                           ParamD paramD; LParamForm paramL;
+                           ParamD paramD; ParamForm paramL;
     jj_consume_token(49);
     paramD = paramFormD();
     paramL = LparamForm();
@@ -163,11 +163,11 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     case 51:
       jj_consume_token(51);
       t = jj_consume_token(id);
-                                                                                      {if (true) return sem.paramDAmp(tipo, t);}
+                                                                                      {if (true) return sem.paramDAmp(tipo, sem.str(t.image,t.beginLine,t.beginColumn));}
       break;
     case id:
       t = jj_consume_token(id);
-                                                                                  {if (true) return sem.paramD(tipo, t);}
+                                                                                  {if (true) return sem.paramD(tipo, sem.str(t.image,t.beginLine,t.beginColumn));}
       break;
     default:
       jj_la1[4] = jj_gen;
@@ -178,13 +178,13 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public ParamForm LparamForm() throws ParseException {
-                            ParamD paramd; LParamForm paramL;
+                            ParamD paramd; ParamForm paramL;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 52:
       jj_consume_token(52);
       paramd = paramFormD();
       paramL = LparamForm();
-                                                                                         {if (true) return param_formAux(paramd, paramL);}
+                                                                                         {if (true) return sem.param_formAux(paramd, paramL);}
       break;
     default:
       jj_la1[5] = jj_gen;
@@ -198,7 +198,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     jj_consume_token(49);
     programa = Programa();
     jj_consume_token(50);
-                                                                {if (true) return programa;}
+                                                                {if (true) return sem.bloque(programa);}
     throw new Error("Missing return statement in function");
   }
 
@@ -206,19 +206,19 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case pint:
       jj_consume_token(pint);
-                                            {if (true) return intt();}
+                                            {if (true) return sem.Intt();}
       break;
     case bool:
       jj_consume_token(bool);
-                                           {if (true) return boolt();}
+                                           {if (true) return sem.Boolt();}
       break;
     case real:
       jj_consume_token(real);
-                                           {if (true) return realt();}
+                                           {if (true) return sem.Realt();}
       break;
     case string:
       jj_consume_token(string);
-                                             {if (true) return stringt();}
+                                             {if (true) return sem.Stringt();}
       break;
     default:
       jj_la1[6] = jj_gen;
@@ -340,7 +340,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public Inst Inst() throws ParseException {
-                 Exp ex1; Exp ex2; InstrOp op1; InstrOp op2; Token i; ParReales par; Bloque blo; Insts res;
+                 Exp ex1; Exp ex2; InstrOp op1; InstrOp op2; Token i; ParReales par; Bloque blo; Inst res;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ptrue:
     case pfalse:
@@ -757,31 +757,31 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
       break;
     case Nentero:
       e = jj_consume_token(Nentero);
-                                       {if (true) return e;}
+                                       {if (true) return sem.nEntero(sem.str(e.image,e.beginLine,e.beginColumn));}
       break;
     case Nreal:
       e = jj_consume_token(Nreal);
-                                     {if (true) return e;}
+                                     {if (true) return sem.nReal(sem.str(e.image,e.beginLine,e.beginColumn));}
       break;
     case ptrue:
       e = jj_consume_token(ptrue);
-                                     {if (true) return e;}
+                                     {if (true) return sem.cierto();}
       break;
     case pfalse:
       e = jj_consume_token(pfalse);
-                                      {if (true) return e;}
+                                      {if (true) return sem.falso();}
       break;
     case pnull:
       e = jj_consume_token(pnull);
-                                     {if (true) return e;}
+                                     {if (true) return sem.nulo();}
       break;
     case literalCad:
       e = jj_consume_token(literalCad);
-                                          {if (true) return e;}
+                                          {if (true) return sem.literalCad(sem.str(e.image,e.beginLine,e.beginColumn));}
       break;
     case id:
       e = jj_consume_token(id);
-                                  {if (true) return e;}
+                                  {if (true) return sem.id(sem.str(e.image,e.beginLine,e.beginColumn));}
       break;
     default:
       jj_la1[23] = jj_gen;
