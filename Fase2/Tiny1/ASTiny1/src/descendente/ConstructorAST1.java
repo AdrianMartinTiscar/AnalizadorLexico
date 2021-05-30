@@ -265,14 +265,14 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public Tipo tarray() throws ParseException {
-                   Token array; Token num; Tipo tipo;
-    array = jj_consume_token(array);
+                   Token num; Tipo tipo;
+    jj_consume_token(array);
     jj_consume_token(55);
     num = jj_consume_token(Nentero);
     jj_consume_token(56);
     jj_consume_token(of);
     tipo = Tipo();
-                                                                                         {if (true) return sem.tArray(sem.str(num.image,num.beginLine,num.beginColumn), tipo);}
+                                                                                   {if (true) return sem.tArray(sem.str(num.image,num.beginLine,num.beginColumn), tipo);}
     throw new Error("Missing return statement in function");
   }
 
