@@ -562,9 +562,9 @@ public class TinyASint {
 	public static class Dec_proc extends Dec {
 		private StringLocalizado id;
 		private ParamForm pf;
-		private Bloque block;
+		private Bloque_vacio block;
 
-		public Dec_proc(StringLocalizado id, ParamForm pf, Bloque block) {
+		public Dec_proc(StringLocalizado id, ParamForm pf, Bloque_vacio block) {
 			this.id = id;
 			this.pf = pf;
 			this.block = block;
@@ -578,7 +578,7 @@ public class TinyASint {
 			return pf;
 		}
 
-		public Bloque block() {
+		public Bloque_vacio block() {
 			return block;
 		}
 
@@ -715,7 +715,7 @@ public class TinyASint {
 		}
 	}
 
-	public static class Bloque {
+	public static class Bloque extends Bloque_vacio{
 		private Prog p;
 
 		public Bloque(Prog p) {
@@ -730,6 +730,16 @@ public class TinyASint {
 			p.procesa(this);
 		}
 	}
+	public static class Bloque_vacio {
+		public Bloque_vacio() {
+		}
+
+
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+
 
 	public static class TArray extends Tipo {
 		private NEntero n;
@@ -1092,13 +1102,13 @@ public class TinyASint {
 	}
 
 	public static class Instruccion_bloque extends Inst {
-		private Bloque blo;
+		private Bloque_vacio blo;
 
-		public Instruccion_bloque(Bloque blo) {
+		public Instruccion_bloque(Bloque_vacio blo) {
 			this.blo = blo;
 		}
 
-		public Bloque blo() {
+		public Bloque_vacio blo() {
 			return blo;
 		}
 
@@ -1658,7 +1668,7 @@ public class TinyASint {
 		return new Dec_habitual(tipo, id);
 	}
 
-	public Dec dec_proc(StringLocalizado id, ParamForm pf, Bloque block) {
+	public Dec dec_proc(StringLocalizado id, ParamForm pf, Bloque_vacio block) {
 		return new Dec_proc(id, pf, block);
 	}
 
@@ -1718,7 +1728,7 @@ public class TinyASint {
 		return new InstrOp_varias(inss);
 	}
 
-	public Inst instruccion_bloque(Bloque bloque) {
+	public Inst instruccion_bloque(Bloque_vacio bloque) {
 		return new Instruccion_bloque(bloque);
 	}
 
@@ -1838,8 +1848,11 @@ public class TinyASint {
 		return new TArray(n, t);
 	}
 
-	public Bloque bloque(Prog p) {
+	public Bloque_vacio bloque(Prog p) {
 		return new Bloque(p);
+	}
+	public Bloque_vacio bloque_vacio() {
+		return new Bloque_vacio();
 	}
 
 	public LParamForm lparamForm_varias(ParamD par, LParamForm pars) {

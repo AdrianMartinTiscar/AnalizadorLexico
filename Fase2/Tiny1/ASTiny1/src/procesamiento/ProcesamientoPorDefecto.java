@@ -44,6 +44,7 @@ public class ProcesamientoPorDefecto implements Procesamiento{
 	public void procesa(LParamForm_varias p){}
 	public void procesa(LParamForm_una p){}
 	public void procesa(Bloque b){}
+	public void procesa(Bloque_vacio b) {}
 	
 	public void procesa(TArray arr){}
 	public void procesa(TRecord_varias recs){}

@@ -84,13 +84,6 @@ public class SemOps extends TinyASint{
 	        return instruccion_ifelse(e, i1, i2);
 	}
 
-	public InstrOp instrOpAux (Inst i, Insts is){
-	    if (is==null)
-	        return instrOp_una(i);
-	    else
-	        return instrOp_varias(is);
-	}
-
 	public ParReales parRealesAux(Exp e, LExpresiones es){
 	    if (e == null)
 	        return parReales_ninguna();

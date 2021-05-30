@@ -9,7 +9,7 @@ type record {
  int y
 } tPar;
 var int x;
-type pointer tNodo tArbol;
+type pointer int tArbol;
 proc incrementa(int & v, int delta) {
  var int x;
  var int y
@@ -23,7 +23,7 @@ proc incrementa(int & v, int delta) {
 peso = (45.0 * 12e-56) / -2.05;
 pesado = (peso > 10.0) or (peso / 2 >= +0.0);
 if x>0 then
- x = x + 1 - 1 + 1 + 1 - 1 - 1 + 2;
+ x = x + 1 + 1 + 1 + 1 + 1 + 1 + 2;
  y = 10
 endif;
 if x>0 then

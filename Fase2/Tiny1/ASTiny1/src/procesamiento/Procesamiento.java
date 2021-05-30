@@ -44,6 +44,7 @@ public interface Procesamiento {
 	void procesa(LParamForm_varias p);
 	void procesa(LParamForm_una p);
 	void procesa(Bloque b);
+	void procesa(Bloque_vacio b);
 	
 	void procesa(TArray arr);
 	void procesa(TRecord_varias recs);

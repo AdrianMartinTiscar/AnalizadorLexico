@@ -205,6 +205,10 @@ public class Impresion extends ProcesamientoPorDefecto {
 		b.cont().procesa(this);
 		System.out.print("}");
 	}
+	public void procesa(Bloque_vacio b) {
+		System.out.println("{");
+		System.out.print("}");
+	}
 	
 	public void procesa(TArray arr){
 		System.out.print(" tArray ");
