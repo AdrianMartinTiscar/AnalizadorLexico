@@ -16,7 +16,7 @@ import procesamiento.TinyASint.ParReales;
 import procesamiento.TinyASint.LExpresiones;
 import procesamiento.TinyASint.StringLocalizado;
 import procesamiento.TinyASint.InstrOp;
-import procesamiento.TinyASint.Bloque;
+import procesamiento.TinyASint.Bloque_vacio;
 import procesamiento.TinyASint.NEntero;
 import procesamiento.SemOps;
 

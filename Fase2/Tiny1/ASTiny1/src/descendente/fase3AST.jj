@@ -20,7 +20,7 @@ import procesamiento.TinyASint.ParReales;
 import procesamiento.TinyASint.LExpresiones;
 import procesamiento.TinyASint.StringLocalizado;
 import procesamiento.TinyASint.InstrOp;
-import procesamiento.TinyASint.Bloque;
+import procesamiento.TinyASint.Bloque_vacio;
 import procesamiento.TinyASint.NEntero;
 import procesamiento.SemOps;
 
@@ -88,7 +88,7 @@ PARSER_END(ConstructorAST1)
   Decs restoDec(Dec dec) : {Decs decs;}
 						   {<PtoComa> decs=Decs() {return sem.declaracion_varias(dec, decs);} |
 						   {return sem.declaracion_una(dec);}}
-  Dec Dec() : {Token d; Tipo tipo; Token t; ParamForm param; Bloque bloque;}
+  Dec Dec() : {Token d; Tipo tipo; Token t; ParamForm param; Bloque_vacio bloque;}
 			  {d=<var> tipo=Tipo() t=<id> {return sem.dec_habitual(tipo, sem.str(t.image,t.beginLine,t.beginColumn));} |
 			   d=<type> tipo=Tipo() t=<id> {return sem.dec_type(tipo, sem.tipoin(sem.str(t.image,t.beginLine,t.beginColumn)));} |
 			   d=<proc> t=<id> param=paramForm() bloque=bloque() {return sem.dec_proc(sem.str(t.image,t.beginLine,t.beginColumn), param, bloque);}}
@@ -103,9 +103,9 @@ PARSER_END(ConstructorAST1)
   LParamForm LparamForm() : {ParamD paramd; LParamForm paramL;}
 					   {"," paramd=paramFormD() paramL=LparamForm() {return sem.lparamFormAux(paramd, paramL);} |
 					   {return null;}}
-  Bloque bloque() : {Bloque blo;}
+  Bloque_vacio bloque() : {Bloque_vacio blo;}
 				    {"{" blo=resbloque() "}" {return blo;}}
-  Bloque resbloque() : {Prog prog;}
+  Bloque_vacio resbloque() : {Prog prog;}
 					   {prog=Programa() {return sem.bloque(prog);} |
 					    {return sem.bloque_vacio();}}
   Tipo tipoBas() : {}
@@ -135,7 +135,7 @@ PARSER_END(ConstructorAST1)
   Insts restoIns(Inst instr) : {Insts instrs;}
 								 {<PtoComa> instrs=Insts()  {return sem.instruccion_varias(instr, instrs);} |
 								 {return sem.instruccion_una(instr);}}
-  Inst Inst() : {Exp ex1; Exp ex2; InstrOp op1; InstrOp op2; Token i; ParReales par; Bloque blo; Inst res;}
+  Inst Inst() : {Exp ex1; Exp ex2; InstrOp op1; InstrOp op2; Token i; ParReales par; Bloque_vacio blo; Inst res;}
 				  {ex1=expr() "=" ex2=expr() {return sem.instruccion_asig(ex1, ex2);} |
 				   <pif> ex1=expr() <then> op1=InstrOp() res=restoIf(ex1, op1) {return res;} |
 				   <pwhile> ex1=expr() <pdo> op1=InstrOp() <endwhile> {return sem.instruccion_while(ex1, op1);} |

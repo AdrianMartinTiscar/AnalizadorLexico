@@ -17,7 +17,7 @@ import procesamiento.TinyASint.ParReales;
 import procesamiento.TinyASint.LExpresiones;
 import procesamiento.TinyASint.StringLocalizado;
 import procesamiento.TinyASint.InstrOp;
-import procesamiento.TinyASint.Bloque;
+import procesamiento.TinyASint.Bloque_vacio;
 import procesamiento.TinyASint.NEntero;
 import procesamiento.SemOps;
 
@@ -98,7 +98,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public Dec Dec() throws ParseException {
-               Token d; Tipo tipo; Token t; ParamForm param; Bloque bloque;
+               Token d; Tipo tipo; Token t; ParamForm param; Bloque_vacio bloque;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case var:
       d = jj_consume_token(var);
@@ -195,8 +195,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Bloque bloque() throws ParseException {
-                     Bloque blo;
+  final public Bloque_vacio bloque() throws ParseException {
+                           Bloque_vacio blo;
     jj_consume_token(53);
     blo = resbloque();
     jj_consume_token(54);
@@ -204,8 +204,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Bloque resbloque() throws ParseException {
-                        Prog prog;
+  final public Bloque_vacio resbloque() throws ParseException {
+                              Prog prog;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ptrue:
     case pfalse:
@@ -379,7 +379,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public Inst Inst() throws ParseException {
-                 Exp ex1; Exp ex2; InstrOp op1; InstrOp op2; Token i; ParReales par; Bloque blo; Inst res;
+                 Exp ex1; Exp ex2; InstrOp op1; InstrOp op2; Token i; ParReales par; Bloque_vacio blo; Inst res;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ptrue:
     case pfalse:
