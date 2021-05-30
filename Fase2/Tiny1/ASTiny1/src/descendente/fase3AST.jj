@@ -119,7 +119,7 @@ PARSER_END(ConstructorAST1)
   Tipo tarray() : {Token num; Tipo tipo;}
 				  {<array> "[" num=<Nentero> "]" <of> tipo=Tipo() {return sem.tArray(sem.str(num.image,num.beginLine,num.beginColumn), tipo);}}
   Tipo trecord() : {Campo campo; Campos campos;}
-				   {<record> "(" campo=campo() campos=campos() ")" {return sem.trecordAux(campo, campos);}}
+				   {<record> "{" campo=campo() campos=campos() "}" {return sem.trecordAux(campo, campos);}}
   Campos campos() : {Campo campo; Campos campos;}
 				  {<PtoComa> campo=campo() campos=campos() {return sem.campos(campo, campos);} |
 				  {return null;}}
