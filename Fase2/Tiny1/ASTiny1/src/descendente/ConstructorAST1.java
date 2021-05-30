@@ -127,7 +127,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public ParamForm paramForm() throws ParseException {
-                           ParamD paramD; ParamForm paramL;
+                           ParamD paramD; LParamForm paramL;
     jj_consume_token(49);
     paramD = paramFormD();
     paramL = LparamForm();
@@ -177,8 +177,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     throw new Error("Missing return statement in function");
   }
 
-  final public ParamForm LparamForm() throws ParseException {
-                            ParamD paramd; ParamForm paramL;
+  final public LParamForm LparamForm() throws ParseException {
+                             ParamD paramd; ParamForm paramL;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 52:
       jj_consume_token(52);
@@ -198,7 +198,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     jj_consume_token(49);
     programa = Programa();
     jj_consume_token(50);
-                                                                {if (true) return sem.bloque(programa);}
+                                                                  {if (true) return sem.bloque(programa);}
     throw new Error("Missing return statement in function");
   }
 
@@ -206,19 +206,19 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case pint:
       jj_consume_token(pint);
-                                            {if (true) return sem.Intt();}
+                                            {if (true) return sem.intt();}
       break;
     case bool:
       jj_consume_token(bool);
-                                           {if (true) return sem.Boolt();}
+                                           {if (true) return sem.boolt();}
       break;
     case real:
       jj_consume_token(real);
-                                           {if (true) return sem.Realt();}
+                                           {if (true) return sem.realt();}
       break;
     case string:
       jj_consume_token(string);
-                                             {if (true) return sem.Stringt();}
+                                             {if (true) return sem.stringt();}
       break;
     default:
       jj_la1[6] = jj_gen;
@@ -229,7 +229,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public Tipo Tipo() throws ParseException {
-                 Tipo t;
+                 Tipo t; Token i;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case pint:
     case real:
@@ -250,8 +250,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
       t = tpointer();
                                                {if (true) return t;}
       break;
-      t = jj_consume_token(id);
-                                         {if (true) return t;}
+      i = jj_consume_token(id);
+                                         {if (true) return sem.tipoin(sem.str(i.image,i.beginLine,i.beginColumn));}
       break;
     default:
       jj_la1[7] = jj_gen;
@@ -753,7 +753,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
       jj_consume_token(49);
       e = E0();
       jj_consume_token(50);
-                                          {if (true) return e;}
+                                          {if (true) return sem.num(sem.str(e.image,e.beginLine,e.beginColumn));}
       break;
     case Nentero:
       e = jj_consume_token(Nentero);
