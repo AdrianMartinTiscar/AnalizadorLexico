@@ -420,7 +420,7 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
   }
 
   final public InstrOp InstrOp() throws ParseException {
-                       Inst inst; Insts instrs;
+                       Insts instrs;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ptrue:
     case pfalse:
@@ -442,9 +442,8 @@ public class ConstructorAST1 implements ConstructorAST1Constants {
     case 49:
     case 53:
     case 59:
-      inst = Inst();
       instrs = Insts();
-                                                                             {if (true) return sem.instrOpAux(inst, instrs);}
+                                                                 {if (true) return sem.instrOp_varias(instrs);}
       break;
     default:
       jj_la1[11] = jj_gen;

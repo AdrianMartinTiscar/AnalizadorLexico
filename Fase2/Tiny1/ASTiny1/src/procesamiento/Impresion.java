@@ -197,6 +197,7 @@ public class Impresion extends ProcesamientoPorDefecto {
 		p.lpar().procesa(this);
 	}
 	public void procesa(LParamForm_una p){
+		System.out.print(", ");
 		p.par().procesa(this);
 	}
 	public void procesa(Bloque b){
@@ -294,6 +295,9 @@ public class Impresion extends ProcesamientoPorDefecto {
 		System.out.print("\"");
 		System.out.print(lc.cad());
 		System.out.print("\"");
+	}
+	public void procesa (Tipo t) {
+		System.out.print(t.getTipo() + " ");
 	}
 	
 	public void procesa(Instruccion_asig in){

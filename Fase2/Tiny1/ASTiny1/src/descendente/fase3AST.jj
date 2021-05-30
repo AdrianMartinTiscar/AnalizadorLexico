@@ -143,8 +143,8 @@ PARSER_END(ConstructorAST1)
 				   <delete> ex1=expr() {return sem.instruccion_delete(ex1);} |
 				   <call> i=<id> par=parReales() {return sem.instruccion_call(sem.str(i.image,i.beginLine,i.beginColumn), par);} |
 				   blo=bloque() {return sem.instruccion_bloque(blo);}}
-  InstrOp InstrOp() : {Inst inst; Insts instrs;}
-						{inst=Inst() instrs=Insts() {return sem.instrOpAux(inst, instrs);} |
+  InstrOp InstrOp() : {Insts instrs;}
+						{instrs=Insts() {return sem.instrOp_varias(instrs);} |
 						{return null;}}
   Inst restoIf(Exp e, InstrOp op1) : {InstrOp op2;}
 									   {<endif> {return sem.instruccion_ifAux(e, op1);} |
