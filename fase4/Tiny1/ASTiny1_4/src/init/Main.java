@@ -3,6 +3,8 @@ package init;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+
+import compilacion.Vinculacion;
 import conCup.alex.AnalizadorLexicoTiny;
 import conCup.asint.AnalizadorSintacticoTiny;
 
@@ -22,8 +24,10 @@ public class Main {
 			Prog pro = null;
 			if (args[1].equals("desc")) {
 				pro = ejecuta_descendente(args[0]);
+				pro.procesa(new Vinculacion());
 			} else if (args[1].equals("asc")) {
 				pro = ejecuta_ascendente(args[0]);
+				pro.procesa(new Vinculacion());
 			} else
 				System.out.println(
 						"El segundo argumento debe ser desc (analisis descendente) o asc (analisis ascendente).");
@@ -36,6 +40,7 @@ public class Main {
 		AnalizadorLexicoTiny alex = new AnalizadorLexicoTiny(input);
 		AnalizadorSintacticoTiny constructorast = new AnalizadorSintacticoTiny(alex);
 		return (Prog) constructorast.parse().value;
+		
 	}
 
 	private static Prog ejecuta_descendente(String in) throws Exception {
